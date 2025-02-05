@@ -1,0 +1,21 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.header__user-info,
+.header__user-block,
+.header__buttons {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.header__user-info {
+  font-size: 18px;
+}
+
+.header__user-block {
+  gap: 15px;
+}
+

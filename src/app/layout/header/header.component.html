@@ -1,0 +1,21 @@
+<mat-toolbar color="primary" class="header">
+  <strong class="header__logo">📄 DocPanel</strong>
+
+  @if (user$ | async; as user) {
+    <div class="header__user-block">
+      <div class="header__user-info">
+        <mat-icon>perm_identity</mat-icon>
+        <span>{{ user.fullName }}</span>
+      </div>
+      <button mat-button color="warn" (click)="logout()">Log out</button>
+    </div>
+  } @else {
+    <div class="header__buttons">
+      <button mat-button [routerLink]="['/', routerLinks.auth, routerLinks.login]" routerLinkActive="active">Login
+      </button>
+      <button mat-raised-button color="primary" [routerLink]="['/', routerLinks.auth, routerLinks.register]"
+              routerLinkActive="active">Sign Up
+      </button>
+    </div>
+  }
+</mat-toolbar>

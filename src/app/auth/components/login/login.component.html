@@ -1,0 +1,32 @@
+@if (isLoading$ | async) {
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+}
+<div class="login-container">
+  <mat-card class="login-card">
+    <p class="title">Sign In</p>
+    <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="outline" class="full-width margin-bottom">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" type="email" required>
+        <mat-error *ngIf="email.invalid && (email.dirty || email.touched)">
+          {{ getEmailError() }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width margin-bottom">
+        <mat-label>Password</mat-label>
+        <input matInput formControlName="password" type="password" required>
+        <mat-error *ngIf="password.invalid && (password.dirty || password.touched)">
+          {{ getPasswordError() }}
+        </mat-error>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" class="full-width margin-bottom" type="submit"
+              [disabled]="!formGroup.valid">
+        Login
+      </button>
+      <p class="text-center">Don't have an account? <a [routerLink]="['/', routerLinks.auth, routerLinks.register]">Register</a>
+      </p>
+    </form>
+  </mat-card>
+</div>
