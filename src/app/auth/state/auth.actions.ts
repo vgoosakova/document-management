@@ -1,4 +1,5 @@
 import {LoginData, RegisterData, User} from './auth.model';
+import {HttpErrorResponse} from '@angular/common/http';
 
 /** Unique identifier of the related state. */
 const uniqueStateIdentifier = '[Trainings]';
@@ -20,7 +21,7 @@ export class LoginSuccess {
 export class LoginFail {
   static readonly type = `${uniqueStateIdentifier} ${LoginFail.name}`;
 
-  constructor(public err: any) {
+  constructor(public error: HttpErrorResponse) {
   }
 }
 
@@ -52,7 +53,7 @@ export class RegistrationSuccess {
 export class RegistrationFail {
   static readonly type = `${uniqueStateIdentifier} ${RegistrationFail.name}`;
 
-  constructor(public err: any) {
+  constructor(public error: HttpErrorResponse) {
   }
 }
 

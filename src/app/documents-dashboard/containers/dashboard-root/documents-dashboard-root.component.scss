@@ -1,0 +1,31 @@
+.dashboard-container {
+  text-align: center;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 1200px;
+  margin: 20px auto;
+}
+
+.dashboard-container__filters {
+  display: flex;
+  justify-content: flex-end;
+  margin: 20px 0;
+  gap: 10px
+}
+
+
+.dashboard-container__no-documents-text {
+  font-size: 1.2rem;
+  color: #888;
+  margin-top: 20px;
+}
+
+@media screen and (max-width: 599px) {
+  .dashboard-container__filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+}

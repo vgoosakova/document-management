@@ -43,3 +43,9 @@ body {
 .margin-bottom {
   margin-bottom: 10px;
 }
+
+.error-snackbar {
+  --mdc-snackbar-container-color: #d32f2f;
+  --mat-snack-bar-button-color: white;
+  text-align: center;
+}

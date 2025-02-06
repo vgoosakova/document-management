@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Store} from '@ngxs/store';
 import {Login} from '../../state/auth.actions';
 import {routerLinks} from '../../../core/enums';
@@ -13,40 +13,49 @@ import {AuthState} from '../../state/auth.state';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginComponent {
-  isLoading$: Observable<boolean> = inject(Store).select(AuthState.isLoading);
-  formGroup: FormGroup;
   protected readonly routerLinks = routerLinks;
+  private readonly store = inject(Store);
+  private readonly fb = inject(FormBuilder);
 
-  constructor(private readonly fb: FormBuilder, private readonly store: Store) {
-    this.formGroup = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
-    });
+  readonly isLoading$: Observable<boolean> = this.store.select(AuthState.isLoading);
+
+  readonly formGroup: FormGroup<{
+    email: FormControl<string>;
+    password: FormControl<string>;
+  }> = this.fb.group({
+    email: this.fb.control('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.email]
+    }),
+    password: this.fb.control('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.minLength(6)]
+    })
+  });
+
+  public get email() {
+    return this.formGroup.controls.email;
   }
 
-  get email() {
-    return this.formGroup.get('email')!;
+  public get password() {
+    return this.formGroup.controls.password;
   }
 
-  get password() {
-    return this.formGroup.get('password')!;
-  }
-
-  getEmailError(): string {
+  public get emailError(): string {
     if (this.email.hasError('required')) return 'Email is required';
     if (this.email.hasError('email')) return 'Invalid email format';
     return '';
   }
 
-  getPasswordError(): string {
+  public get passwordError(): string {
     if (this.password.hasError('required')) return 'Password is required';
     if (this.password.hasError('minlength')) return 'Password must be at least 6 characters';
     return '';
   }
 
-  onSubmit() {
+  public onSubmit(): void {
     if (this.formGroup.valid) {
-      this.store.dispatch(new Login(this.formGroup.value));
+      this.store.dispatch(new Login(this.formGroup.getRawValue()));
     }
   }
 }

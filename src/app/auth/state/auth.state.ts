@@ -9,20 +9,21 @@ import {
   Registration,
   RegistrationFail,
 } from './auth.actions';
-import {AuthStateModel, DEFAULT_AUTH_STATE} from './auth.model';
-import {Injectable} from '@angular/core';
+import {AuthStateModel, defaultAuthState} from './auth.model';
+import {inject, Injectable} from '@angular/core';
 import {AuthService} from '../services/auth.service';
 import {Navigate} from '@ngxs/router-plugin';
 import {routerLinks} from '../../core/enums';
+import {ErrorHandlerService} from '../../shared/error-handler.service';
 
 @State<AuthStateModel>({
   name: 'auth',
-  defaults: DEFAULT_AUTH_STATE,
+  defaults: defaultAuthState,
 })
 @Injectable()
 export class AuthState implements NgxsOnInit {
-  constructor(private readonly auth: AuthService) {
-  }
+  private auth = inject(AuthService);
+  private errorHandler = inject(ErrorHandlerService);
 
   @Selector()
   static user(state: AuthStateModel): AuthStateModel['user'] {
@@ -44,10 +45,11 @@ export class AuthState implements NgxsOnInit {
     if (token) {
       ctx.patchState({
         token,
-        isAuthenticated: true,  // Set isAuthenticated immediately
+        isAuthenticated: true,
       });
+
+      ctx.dispatch(new LoadUser());
     }
-    ctx.dispatch(new LoadUser());
   }
 
   @Action(Login)
@@ -73,27 +75,26 @@ export class AuthState implements NgxsOnInit {
   }
 
   @Action(LoginFail)
-  loginFail(ctx: StateContext<AuthStateModel>, {err}: LoginFail) {
+  loginFail(ctx: StateContext<AuthStateModel>, {error}: LoginFail) {
     ctx.patchState({loading: false, loaded: false});
+    this.errorHandler.showError(error.error.message);
   }
 
   @Action(LoadUser)
   loadUser(ctx: StateContext<AuthStateModel>) {
-    const token = localStorage.getItem('auth_token');
-
-    if (!token) {
-      return
-    }
     ctx.patchState({loaded: false, loading: true})
     this.auth.getUser().subscribe({
       next: user => ctx.dispatch(new LoadUserSuccess(user)),
-      error: () => ctx.dispatch(ctx.dispatch(new Logout())),
+      error: error => {
+        this.errorHandler.showError(error.error.message);
+        ctx.dispatch(new Logout())
+      },
     });
   }
 
   @Action(LoadUserSuccess)
   loadUserSuccess(ctx: StateContext<AuthStateModel>, {user}: LoadUserSuccess) {
-    ctx.patchState({user, loaded: true, loading: false, isAuthenticated: true})
+    ctx.patchState({user, loaded: true, loading: false})
   }
 
   @Action(Logout)
@@ -123,10 +124,12 @@ export class AuthState implements NgxsOnInit {
   }
 
   @Action(RegistrationFail)
-  actionFail(ctx: StateContext<AuthStateModel>, {err}: RegistrationFail) {
+  actionFail(ctx: StateContext<AuthStateModel>, {error}: RegistrationFail) {
     ctx.patchState({
       loading: false,
       loaded: false,
     });
+
+    this.errorHandler.showError(error.error.message);
   }
 }

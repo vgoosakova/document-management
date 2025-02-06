@@ -1,0 +1,50 @@
+<mat-progress-bar *ngIf="(loadDocumentsListStatus$ | async) === progressStatuses.inProgress"
+                  mode="indeterminate"></mat-progress-bar>
+
+<div class="dashboard-container">
+
+  <h3>Document Management</h3>
+
+  <button mat-raised-button color="primary">
+    <mat-icon>add</mat-icon>
+    Add Document
+  </button>
+
+  <div class="dashboard-container__filters">
+    <mat-form-field>
+      <mat-label>Status</mat-label>
+      <mat-select [ngModel]="statusFilter()" (ngModelChange)="statusFilter.set($event); fetchDocuments()">
+        <mat-option [value]="null">All</mat-option>
+        <mat-option [value]="documentStatus.draft">{{ documentStatusRelatedNames[documentStatus.draft] }}</mat-option>
+        <mat-option [value]="documentStatus.revoke">{{ documentStatusRelatedNames[documentStatus.revoke] }}</mat-option>
+        <mat-option
+          [value]="documentStatus.readyForReview">{{ documentStatusRelatedNames[documentStatus.readyForReview] }}
+        </mat-option>
+        <mat-option [value]="documentStatus.underReview">{{ documentStatusRelatedNames[documentStatus.underReview] }}
+        </mat-option>
+        <mat-option [value]="documentStatus.approved">{{ documentStatusRelatedNames[documentStatus.approved] }}
+        </mat-option>
+        <mat-option [value]="documentStatus.declined">{{ documentStatusRelatedNames[documentStatus.declined] }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field *ngIf="(user$ | async)?.role === userRole.reviewer">
+      <mat-label>Creator</mat-label>
+      <input matInput [ngModel]="creatorFilter()" (ngModelChange)="creatorFilter.set($event); fetchDocuments()"
+             placeholder="Filter by creator">
+    </mat-form-field>
+  </div>
+
+  <ng-container *ngIf="filteredDocuments().length; else noDocuments">
+    <app-documents-dashboard-table
+      [documents]="filteredDocuments"
+      [isReviewer]="(user$ | async)?.role === userRole.reviewer"
+      (filtersChanged)="onFiltersChanged($event)"
+    ></app-documents-dashboard-table>
+  </ng-container>
+
+  <ng-template #noDocuments>
+    <p class="dashboard-container__no-documents-text">No documents yet</p>
+  </ng-template>
+</div>

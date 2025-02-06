@@ -1,5 +1,3 @@
-import {UserRole} from '../../core/enums';
-
 export interface AuthStateModel {
   loading: boolean;
   loaded: boolean;
@@ -8,7 +6,7 @@ export interface AuthStateModel {
   isAuthenticated: boolean;
 }
 
-export const DEFAULT_AUTH_STATE: AuthStateModel = {
+export const defaultAuthState: AuthStateModel = {
   loading: false,
   loaded: false,
   user: null,
@@ -37,4 +35,9 @@ export interface RegisterData {
 export interface LoginData {
   email: string;
   password: string;
+}
+
+export enum UserRole {
+  user = 'USER',
+  reviewer = 'REVIEWER'
 }
