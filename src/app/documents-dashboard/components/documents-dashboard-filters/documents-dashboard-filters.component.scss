@@ -1,0 +1,14 @@
+.filters {
+  display: flex;
+  justify-content: flex-end;
+  margin: 20px 0;
+  gap: 10px
+}
+
+@media screen and (max-width: 599px) {
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+}

@@ -19,6 +19,9 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select';
 import {FormsModule} from '@angular/forms';
 import {MatInput} from '@angular/material/input';
+import {
+  DocumentsDashboardFiltersComponent
+} from './components/documents-dashboard-filters/documents-dashboard-filters.component';
 
 export const dashboardRoutes: Routes = [
   {
@@ -29,7 +32,7 @@ export const dashboardRoutes: Routes = [
 ];
 
 @NgModule({
-  declarations: [DocumentsDashboardRootComponent, DocumentsDashboardTableComponent],
+  declarations: [DocumentsDashboardRootComponent, DocumentsDashboardTableComponent, DocumentsDashboardFiltersComponent],
   imports: [
     CommonModule,
     RouterLink,

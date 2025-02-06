@@ -52,7 +52,7 @@ export interface DocumentsListFilters {
   size: number;
   sort?: string;
   status?: DocumentStatus;
-  creator?: User;
+  creator?: string;
 }
 
 export interface DocumentModel {
@@ -80,7 +80,7 @@ export enum DocumentStatus {
   declined = 'DECLINED'
 }
 
-export const documentStatusRelatedNames: { [key in DocumentStatus]: string } = {
+export const documentStatusRelatedName: { [key in DocumentStatus]: string } = {
   [DocumentStatus.draft]: 'Draft',
   [DocumentStatus.revoke]: 'Revoke',
   [DocumentStatus.readyForReview]: 'Ready for review',

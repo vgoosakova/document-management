@@ -39,6 +39,11 @@ export class DocumentsDashboardState {
   }
 
   @Selector()
+  static documentsItemsCount(state: DocumentStateModel): DocumentStateModel['documentsItemsCount'] {
+    return state.documentsItemsCount;
+  }
+
+  @Selector()
   static manageDocumentStatus(state: DocumentStateModel): DocumentStateModel['manageDocumentStatus'] {
     return state.manageDocumentStatus;
   }

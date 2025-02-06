@@ -40,8 +40,9 @@
 </table>
 
 <mat-paginator
-  [length]="documents().length"
+  [length]="documentsItemsCount$ | async"
   [pageSize]="pageSize()"
+  [pageIndex]="pageIndex()"
   [pageSizeOptions]="pageSizeOptions"
   (page)="onPageChange($event)"
 ></mat-paginator>

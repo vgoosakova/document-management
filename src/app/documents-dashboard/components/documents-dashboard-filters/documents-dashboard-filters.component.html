@@ -1,0 +1,22 @@
+<div class="filters">
+  <mat-form-field>
+    <mat-label>Status</mat-label>
+    <mat-select [(value)]="filters.status" (selectionChange)="onFiltersChanged()">
+      <mat-option value="all">All</mat-option>
+      <mat-option [value]="documentStatus.draft">{{ documentStatusRelatedNames[documentStatus.draft] }}</mat-option>
+      <mat-option [value]="documentStatus.revoke">{{ documentStatusRelatedNames[documentStatus.revoke] }}</mat-option>
+      <mat-option [value]="documentStatus.readyForReview">{{ documentStatusRelatedNames[documentStatus.readyForReview] }}</mat-option>
+      <mat-option [value]="documentStatus.underReview">{{ documentStatusRelatedNames[documentStatus.underReview] }}</mat-option>
+      <mat-option [value]="documentStatus.approved">{{ documentStatusRelatedNames[documentStatus.approved] }}</mat-option>
+      <mat-option [value]="documentStatus.declined">{{ documentStatusRelatedNames[documentStatus.declined] }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field *ngIf="(user$ | async)?.role === userRole.reviewer">
+    <mat-label>Creator</mat-label>
+    <input matInput placeholder="Filter by creator" [(ngModel)]="filters.creator" (keyup.enter)="onFiltersChanged()">
+    <button mat-icon-button *ngIf="filters.creator" matSuffix (click)="clearCreator()">
+      <mat-icon>clear</mat-icon>
+    </button>
+  </mat-form-field>
+</div>

@@ -10,35 +10,11 @@
     Add Document
   </button>
 
-  <div class="dashboard-container__filters">
-    <mat-form-field>
-      <mat-label>Status</mat-label>
-      <mat-select [ngModel]="statusFilter()" (ngModelChange)="statusFilter.set($event); fetchDocuments()">
-        <mat-option [value]="null">All</mat-option>
-        <mat-option [value]="documentStatus.draft">{{ documentStatusRelatedNames[documentStatus.draft] }}</mat-option>
-        <mat-option [value]="documentStatus.revoke">{{ documentStatusRelatedNames[documentStatus.revoke] }}</mat-option>
-        <mat-option
-          [value]="documentStatus.readyForReview">{{ documentStatusRelatedNames[documentStatus.readyForReview] }}
-        </mat-option>
-        <mat-option [value]="documentStatus.underReview">{{ documentStatusRelatedNames[documentStatus.underReview] }}
-        </mat-option>
-        <mat-option [value]="documentStatus.approved">{{ documentStatusRelatedNames[documentStatus.approved] }}
-        </mat-option>
-        <mat-option [value]="documentStatus.declined">{{ documentStatusRelatedNames[documentStatus.declined] }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+  <app-documents-dashboard-filters (filtersChanged)="onFiltersChanged($event)"></app-documents-dashboard-filters>
 
-    <mat-form-field *ngIf="(user$ | async)?.role === userRole.reviewer">
-      <mat-label>Creator</mat-label>
-      <input matInput [ngModel]="creatorFilter()" (ngModelChange)="creatorFilter.set($event); fetchDocuments()"
-             placeholder="Filter by creator">
-    </mat-form-field>
-  </div>
-
-  <ng-container *ngIf="filteredDocuments().length; else noDocuments">
+  <ng-container *ngIf="documentsList().length; else noDocuments">
     <app-documents-dashboard-table
-      [documents]="filteredDocuments"
+      [documents]="documentsList"
       [isReviewer]="(user$ | async)?.role === userRole.reviewer"
       (filtersChanged)="onFiltersChanged($event)"
     ></app-documents-dashboard-table>
