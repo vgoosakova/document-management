@@ -48,7 +48,7 @@ export class DocumentsDashboardTableComponent implements OnInit {
   @Input({required: true}) documents!: Signal<DocumentModel[]>;
   @Input() isReviewer!: boolean;
 
-  displayedColumns = ['name', 'status', 'updatedAt', 'actions'];
+  displayedColumns!: string[];
 
   @Output() filtersChanged = new EventEmitter<DocumentsListFilters>();
 
@@ -68,6 +68,10 @@ export class DocumentsDashboardTableComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.displayedColumns = this.isReviewer
+      ? ['name', 'status', 'creator', 'updatedAt', 'actions']
+      : ['name', 'status', 'updatedAt', 'actions'];
+
     this.activatedRoute.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       const page = Number(params['page']);
       this.pageIndex.set(isNaN(page) || page < 1 ? 0 : page - 1);

@@ -67,7 +67,7 @@ export class DocumentsDashboardDocumentComponent implements OnInit, OnDestroy {
         locale: 'en',
         container: this.viewerContainer.nativeElement,
         document: `${location.protocol}//${location.host}/s3/${fileUrl.split('com/')[1]}`,
-        baseUrl: `${location.protocol}//${location.host}/assets/`
+        baseUrl: `${location.protocol}//${location.host}/assets/`,
       });
     } catch (error) {
       console.error(error);

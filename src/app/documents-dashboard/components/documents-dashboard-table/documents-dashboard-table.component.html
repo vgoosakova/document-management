@@ -12,6 +12,16 @@
     </td>
   </ng-container>
 
+
+  @if (isReviewer) {
+    <ng-container matColumnDef="creator">
+      <th mat-header-cell *matHeaderCellDef>Creator</th>
+      <td mat-cell *matCellDef="let document">
+        {{ document.creator.fullName }}
+      </td>
+    </ng-container>
+  }
+
   <ng-container matColumnDef="updatedAt">
     <th mat-header-cell *matHeaderCellDef mat-sort-header>Updated At</th>
     <td mat-cell *matCellDef="let document">{{ document.updatedAt | date:'dd MMM yyyy, HH:mm' }}</td>
@@ -29,20 +39,24 @@
           <mat-icon>edit</mat-icon>
         </button>
       }
-      @if (!isReviewer && document.status === documentStatus.draft) {
-        <button mat-icon-button matTooltip="Send to review" color="secondary" (click)="sendDocumentToReview(document)">
-          <mat-icon>send</mat-icon>
-        </button>
-      }
-      @if (!isReviewer && (document.status === documentStatus.readyForReview)) {
-        <button mat-icon-button matTooltip="Revoke" color="warn" (click)="revokeDocument(document)">
-          <mat-icon>undo</mat-icon>
-        </button>
-      }
-      @if (!isReviewer && (document.status === documentStatus.draft || document.status === documentStatus.revoke)) {
-        <button mat-icon-button matTooltip="Delete" color="warn" (click)="deleteDocument(document)">
-          <mat-icon>delete</mat-icon>
-        </button>
+
+      @if (!isReviewer) {
+        @if (document.status === documentStatus.draft) {
+          <button mat-icon-button matTooltip="Send to review" color="secondary"
+                  (click)="sendDocumentToReview(document)">
+            <mat-icon>send</mat-icon>
+          </button>
+        }
+        @if (document.status === documentStatus.readyForReview) {
+          <button mat-icon-button matTooltip="Revoke" color="warn" (click)="revokeDocument(document)">
+            <mat-icon>undo</mat-icon>
+          </button>
+        }
+        @if (document.status === documentStatus.draft || document.status === documentStatus.revoke) {
+          <button mat-icon-button matTooltip="Delete" color="warn" (click)="deleteDocument(document)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        }
       }
     </td>
   </ng-container>
