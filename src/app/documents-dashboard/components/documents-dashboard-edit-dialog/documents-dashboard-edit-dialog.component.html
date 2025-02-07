@@ -5,12 +5,15 @@
       <mat-label>Document Status</mat-label>
       <mat-select formControlName="status">
         @if (data.status === documentStatus.underReview) {
-          <mat-option [value]="documentStatus.approved">{{ documentStatusRelatedName[documentStatus.approved] }}
+          <mat-option [value]="documentStatus.approved">
+            {{ documentStatusRelatedName[documentStatus.approved] }}
           </mat-option>
-          <mat-option [value]="documentStatus.declined">{{ documentStatusRelatedName[documentStatus.declined] }}
+          <mat-option [value]="documentStatus.declined">
+            {{ documentStatusRelatedName[documentStatus.declined] }}
           </mat-option>
         } @else {
-          <mat-option [value]="documentStatus.underReview">{{ documentStatusRelatedName[documentStatus.underReview] }}
+          <mat-option [value]="documentStatus.underReview">
+            {{ documentStatusRelatedName[documentStatus.underReview] }}
           </mat-option>
         }
       </mat-select>

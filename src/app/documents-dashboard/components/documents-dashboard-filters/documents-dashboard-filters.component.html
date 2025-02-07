@@ -4,21 +4,37 @@
     <mat-select [(value)]="filters.status" (selectionChange)="onFiltersChanged()">
       <mat-option value="all">All</mat-option>
       @if (!isReviewer) {
-        <mat-option [value]="documentStatus.draft">{{ documentStatusRelatedName[documentStatus.draft] }}</mat-option>
+        <mat-option [value]="documentStatus.draft">
+          {{ documentStatusRelatedName[documentStatus.draft] }}
+        </mat-option>
       }
-      <mat-option [value]="documentStatus.revoke">{{ documentStatusRelatedName[documentStatus.revoke] }}</mat-option>
-      <mat-option [value]="documentStatus.readyForReview">{{ documentStatusRelatedName[documentStatus.readyForReview] }}</mat-option>
-      <mat-option [value]="documentStatus.underReview">{{ documentStatusRelatedName[documentStatus.underReview] }}</mat-option>
-      <mat-option [value]="documentStatus.approved">{{ documentStatusRelatedName[documentStatus.approved] }}</mat-option>
-      <mat-option [value]="documentStatus.declined">{{ documentStatusRelatedName[documentStatus.declined] }}</mat-option>
+      <mat-option [value]="documentStatus.revoke">
+        {{ documentStatusRelatedName[documentStatus.revoke] }}
+      </mat-option>
+      <mat-option [value]="documentStatus.readyForReview">
+        {{ documentStatusRelatedName[documentStatus.readyForReview] }}
+      </mat-option>
+      <mat-option [value]="documentStatus.underReview">
+        {{ documentStatusRelatedName[documentStatus.underReview] }}
+      </mat-option>
+      <mat-option [value]="documentStatus.approved">
+        {{ documentStatusRelatedName[documentStatus.approved] }}
+      </mat-option>
+      <mat-option [value]="documentStatus.declined">
+        {{ documentStatusRelatedName[documentStatus.declined] }}
+      </mat-option>
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field *ngIf="(user$ | async)?.role === userRole.reviewer">
-    <mat-label>Creator</mat-label>
-    <input matInput placeholder="Filter by creator" [(ngModel)]="filters.creator" (keyup.enter)="onFiltersChanged()">
-    <button mat-icon-button *ngIf="filters.creator" matSuffix (click)="clearCreator()">
-      <mat-icon>clear</mat-icon>
-    </button>
-  </mat-form-field>
+  @if ((user$ | async)?.role === userRole.reviewer) {
+    <mat-form-field>
+      <mat-label>Creator</mat-label>
+      <input matInput placeholder="Filter by creator" [(ngModel)]="filters.creator" (keyup.enter)="onFiltersChanged()">
+      @if (filters.creator) {
+        <button mat-icon-button matSuffix (click)="clearCreator()">
+          <mat-icon>clear</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+  }
 </div>

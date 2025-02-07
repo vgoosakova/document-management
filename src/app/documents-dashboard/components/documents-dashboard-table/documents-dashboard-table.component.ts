@@ -47,22 +47,24 @@ import {routerLinks} from '../../../core/enums';
 export class DocumentsDashboardTableComponent implements OnInit {
   @Input({required: true}) documents!: Signal<DocumentModel[]>;
   @Input() isReviewer!: boolean;
-
-  displayedColumns!: string[];
-
   @Output() filtersChanged = new EventEmitter<DocumentsListFilters>();
 
+  displayedColumns!: string[];
   pageSizeOptions = [5, 10, 25];
+
   pageIndex = signal(0);
   pageSize = signal(10);
   sortField = signal<string | null>(null);
   sortDirection = signal<'asc' | 'desc' | ''>('');
+
   protected readonly documentStatus = DocumentStatus;
   protected readonly routerLinks = routerLinks;
+
   private readonly destroyRef = inject(DestroyRef);
   private readonly store = inject(Store);
-  readonly documentsItemsCount$: Observable<DocumentStateModel['documentsItemsCount']> = this.store.select(DocumentsDashboardState.documentsItemsCount);
   private readonly dialog = inject(MatDialog);
+
+  documentsItemsCount$: Observable<DocumentStateModel['documentsItemsCount']> = this.store.select(DocumentsDashboardState.documentsItemsCount);
 
   constructor(private readonly activatedRoute: ActivatedRoute) {
   }

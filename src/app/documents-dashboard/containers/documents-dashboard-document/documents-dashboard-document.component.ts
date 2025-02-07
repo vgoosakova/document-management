@@ -17,6 +17,7 @@ import {DocumentStateModel} from '../../state/documents-dashboard.model';
 import {filter, Observable} from 'rxjs';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {progressStatuses, routerLinks} from '../../../core/enums';
+import {ErrorHandlerService} from '../../../shared/error-handler.service';
 
 
 @Component({
@@ -27,21 +28,22 @@ import {progressStatuses, routerLinks} from '../../../core/enums';
 })
 export class DocumentsDashboardDocumentComponent implements OnInit, OnDestroy {
   @ViewChild('viewerContainer', {static: false}) viewerContainer!: ElementRef;
+  protected readonly progressStatuses = progressStatuses;
+  protected readonly routerLinks = routerLinks;
   private readonly store = inject(Store);
+  private errorHandler = inject(ErrorHandlerService);
   readonly manageDocumentStatus$: Observable<DocumentStateModel['manageDocumentStatus']> = this.store.select(DocumentsDashboardState.manageDocumentStatus);
   readonly currentDocument$: Observable<DocumentStateModel['currentDocument']> = this.store.select(DocumentsDashboardState.currentDocument);
   private readonly destroyRef = inject(DestroyRef);
   private readonly route = inject(ActivatedRoute);
   private instance: Instance | null = null;
 
-  constructor() {
+  ngOnInit() {
     const documentId = this.route.snapshot.paramMap.get('id');
     if (documentId) {
       this.store.dispatch(new LoadDocument(documentId));
     }
-  }
 
-  ngOnInit() {
     this.currentDocument$.pipe(
       filter(value => !!value),
       takeUntilDestroyed(this.destroyRef)
@@ -70,10 +72,8 @@ export class DocumentsDashboardDocumentComponent implements OnInit, OnDestroy {
         baseUrl: `${location.protocol}//${location.host}/assets/`,
       });
     } catch (error) {
+      this.errorHandler.showErrorMessage('Something went wrong...');
       console.error(error);
     }
   }
-
-  protected readonly progressStatuses = progressStatuses;
-  protected readonly routerLinks = routerLinks;
 }

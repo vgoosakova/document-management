@@ -11,7 +11,7 @@ export class DocumentsDashboardService {
   http = inject(HttpClient)
 
   public loadDocumentsList(filters: DocumentsListFilters): Observable<BackendPagination<DocumentModel[]>> {
-    const params: any = {page: filters.page, size: filters.size};
+    const params: Partial<DocumentsListFilters> = {page: filters.page, size: filters.size};
 
     if (filters.sort) {
       params.sort = filters.sort;

@@ -80,7 +80,7 @@ export enum DocumentStatus {
   declined = 'DECLINED'
 }
 
-export const documentStatusRelatedName: { [key in DocumentStatus]: string } = {
+export const documentStatusRelatedName: Record<DocumentStatus, string> = {
   [DocumentStatus.draft]: 'Draft',
   [DocumentStatus.revoke]: 'Revoke',
   [DocumentStatus.readyForReview]: 'Ready for review',

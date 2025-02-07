@@ -1,7 +1,8 @@
-import {ChangeDetectionStrategy, Component, ElementRef, Inject, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, inject, Inject, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {DocumentStatus} from '../../state/documents-dashboard.model';
+import {ErrorHandlerService} from '../../../shared/error-handler.service';
 
 interface DocumentData {
   id: string;
@@ -17,10 +18,11 @@ interface DocumentData {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DocumentsDashboardCreateDialogComponent {
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   formGroup: FormGroup;
   file: File | null = null;
-  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   protected readonly documentStatus = DocumentStatus;
+  private readonly errorHandler = inject(ErrorHandlerService);
 
   constructor(
     private fb: FormBuilder,
@@ -43,13 +45,6 @@ export class DocumentsDashboardCreateDialogComponent {
     return this.formGroup.controls['name'];
   }
 
-  public get nameError(): string {
-    if (this.name.hasError('required')) return 'Name is required';
-    if (this.name.hasError('minLength')) return 'Name must be at least 3 characters';
-    if (this.name.hasError('maxLength')) return 'Name cannot exceed 100 characters';
-    return '';
-  }
-
   onFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files?.length) {
@@ -58,7 +53,7 @@ export class DocumentsDashboardCreateDialogComponent {
         this.file = file;
         this.formGroup.patchValue({file: this.file});
       } else {
-        alert('Only PDF files are allowed.');
+        this.errorHandler.showErrorMessage('Only PDF files are allowed.');
       }
     }
   }
@@ -71,7 +66,7 @@ export class DocumentsDashboardCreateDialogComponent {
         this.file = file;
         this.formGroup.patchValue({file: this.file});
       } else {
-        alert('Only PDF files are allowed.');
+        this.errorHandler.showErrorMessage('Only PDF files are allowed.');
       }
     }
   }

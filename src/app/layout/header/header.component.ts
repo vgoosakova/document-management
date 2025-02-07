@@ -27,11 +27,9 @@ import {routerLinks} from '../../core/enums';
   ]
 })
 export class HeaderComponent {
-  user$: Observable<AuthStateModel['user']> = inject(Store).select(AuthState.user);
   protected readonly routerLinks = routerLinks;
-
-  constructor(private store: Store) {
-  }
+  private readonly store = inject(Store);
+  user$: Observable<AuthStateModel['user']> = this.store.select(AuthState.user);
 
   logout() {
     this.store.dispatch(new Logout());

@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {Action, Selector, State, StateContext} from '@ngxs/store';
 import {defaultDocumentState, DocumentStateModel, DocumentStatus} from './documents-dashboard.model';
 import {DocumentsDashboardService} from '../services/documents-dashboard.service';
@@ -38,8 +38,8 @@ import {progressStatuses} from '../../core/enums';
 })
 @Injectable()
 export class DocumentsDashboardState {
-  constructor(private documentsDashboardService: DocumentsDashboardService, private errorHandler: ErrorHandlerService) {
-  }
+  private documentsDashboardService = inject(DocumentsDashboardService);
+  private errorHandler = inject(ErrorHandlerService);
 
   @Selector()
   static loadDocumentsListStatus(state: DocumentStateModel): DocumentStateModel['loadDocumentsListStatus'] {
@@ -101,7 +101,7 @@ export class DocumentsDashboardState {
       lastLoadDocumentsListError: error,
     });
 
-    this.errorHandler.showError(error.error.message);
+    this.errorHandler.showErrorMessage(error.error.message);
   }
 
   @Action(CreateDocument)
@@ -123,7 +123,8 @@ export class DocumentsDashboardState {
     const updatedList = [currentDocument, ...state.documentsList]
     ctx.patchState({
       manageDocumentStatus: progressStatuses.succeed,
-      documentsList: updatedList
+      documentsList: updatedList,
+      documentsItemsCount: state.documentsItemsCount + 1,
     });
   }
 
@@ -134,7 +135,7 @@ export class DocumentsDashboardState {
       lastManageDocumentError: error,
     });
 
-    this.errorHandler.showError(error.error.message);
+    this.errorHandler.showErrorMessage(error.error.message);
   }
 
   @Action(LoadDocument)
@@ -165,7 +166,7 @@ export class DocumentsDashboardState {
       lastManageDocumentError: error,
     });
 
-    this.errorHandler.showError(error.error.message);
+    this.errorHandler.showErrorMessage(error.error.message);
   }
 
   @Action(UpdateDocument)
@@ -195,6 +196,8 @@ export class DocumentsDashboardState {
       manageDocumentStatus: progressStatuses.succeed,
       documentsList: updatedList,
     });
+
+    this.errorHandler.showSuccessMessage('The document was successfully updated!');
   }
 
   @Action(UpdateDocumentFail)
@@ -204,7 +207,7 @@ export class DocumentsDashboardState {
       lastManageDocumentError: error,
     });
 
-    this.errorHandler.showError(error.error.message);
+    this.errorHandler.showErrorMessage(error.error.message);
   }
 
   @Action(DeleteDocument)
@@ -239,7 +242,7 @@ export class DocumentsDashboardState {
       lastPerformDocumentActionError: error,
     });
 
-    this.errorHandler.showError(error.error.message);
+    this.errorHandler.showErrorMessage(error.error.message);
   }
 
   @Action(ChangeDocumentStatus)
@@ -281,7 +284,7 @@ export class DocumentsDashboardState {
       lastPerformDocumentActionError: error,
     });
 
-    this.errorHandler.showError(error.error.message);
+    this.errorHandler.showErrorMessage(error.error.message);
   }
 
   @Action(RevokeDocumentReview)
@@ -308,6 +311,8 @@ export class DocumentsDashboardState {
       performDocumentActionStatus: progressStatuses.succeed,
       documentsList: updatedList,
     });
+
+    this.errorHandler.showSuccessMessage('The document was successfully revoked!');
   }
 
   @Action(RevokeDocumentReviewFail)
@@ -317,7 +322,7 @@ export class DocumentsDashboardState {
       lastPerformDocumentActionError: error,
     });
 
-    this.errorHandler.showError(error.error.message);
+    this.errorHandler.showErrorMessage(error.error.message);
   }
 
   @Action(SendDocumentToReview)
@@ -344,6 +349,8 @@ export class DocumentsDashboardState {
       performDocumentActionStatus: progressStatuses.succeed,
       documentsList: updatedList,
     });
+
+    this.errorHandler.showSuccessMessage('The document was successfully sent!')
   }
 
   @Action(SendDocumentToReviewFail)
@@ -353,7 +360,7 @@ export class DocumentsDashboardState {
       lastPerformDocumentActionError: error,
     });
 
-    this.errorHandler.showError(error.error.message);
+    this.errorHandler.showErrorMessage(error.error.message);
   }
 
   @Action(ResetDocumentDetails)

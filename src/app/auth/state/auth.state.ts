@@ -77,7 +77,7 @@ export class AuthState implements NgxsOnInit {
   @Action(LoginFail)
   loginFail(ctx: StateContext<AuthStateModel>, {error}: LoginFail) {
     ctx.patchState({loading: false, loaded: false});
-    this.errorHandler.showError(error.error.message);
+    this.errorHandler.showErrorMessage(error.error.message);
   }
 
   @Action(LoadUser)
@@ -86,7 +86,7 @@ export class AuthState implements NgxsOnInit {
     this.auth.getUser().subscribe({
       next: user => ctx.dispatch(new LoadUserSuccess(user)),
       error: error => {
-        this.errorHandler.showError(error.error.message);
+        this.errorHandler.showErrorMessage(error.error.message);
         ctx.dispatch(new Logout())
       },
     });
@@ -130,6 +130,6 @@ export class AuthState implements NgxsOnInit {
       loaded: false,
     });
 
-    this.errorHandler.showError(error.error.message);
+    this.errorHandler.showErrorMessage(error.error.message);
   }
 }

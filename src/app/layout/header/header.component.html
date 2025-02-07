@@ -11,10 +11,12 @@
     </div>
   } @else {
     <div class="header__buttons">
-      <button mat-button [routerLink]="['/', routerLinks.auth, routerLinks.login]" routerLinkActive="active">Login
+      <button mat-button [routerLink]="['/', routerLinks.auth, routerLinks.login]" routerLinkActive="active">
+        Login
       </button>
       <button mat-raised-button color="primary" [routerLink]="['/', routerLinks.auth, routerLinks.register]"
-              routerLinkActive="active">Sign Up
+              routerLinkActive="active">
+        Sign Up
       </button>
     </div>
   }

@@ -24,18 +24,22 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 })
 export class DocumentsDashboardFiltersComponent implements OnInit {
   @Input() isReviewer!: boolean;
-  store = inject(Store);
-  readonly user$: Observable<AuthStateModel['user']> = this.store.select(AuthState.user);
+  @Output() filtersChanged = new EventEmitter<Partial<DocumentsListFilters>>();
+
   filters: Partial<DocumentsListFilters> = {
     status: undefined,
     creator: undefined,
     page: 1
   };
-  @Output() filtersChanged = new EventEmitter<Partial<DocumentsListFilters>>();
+
   protected readonly userRole = UserRole;
   protected readonly documentStatus = DocumentStatus;
   protected readonly documentStatusRelatedName = documentStatusRelatedName;
+
+  private readonly store = inject(Store);
   private readonly destroyRef = inject(DestroyRef);
+
+  readonly user$: Observable<AuthStateModel['user']> = this.store.select(AuthState.user);
 
   constructor(private readonly activatedRoute: ActivatedRoute) {
   }

@@ -8,21 +8,20 @@
       <mat-form-field appearance="outline" class="full-width margin-bottom">
         <mat-label>Email</mat-label>
         <input matInput formControlName="email" type="email" required>
-        <mat-error *ngIf="email.invalid && (email.dirty || email.touched)">
-          {{ emailError }}
+        <mat-error>
+          {{ emailError() }}
         </mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="full-width margin-bottom">
         <mat-label>Password</mat-label>
         <input matInput formControlName="password" type="password" required>
-        <mat-error *ngIf="password.invalid && (password.dirty || password.touched)">
-          {{ passwordError }}
+        <mat-error>
+          {{ passwordError() }}
         </mat-error>
       </mat-form-field>
 
-      <button mat-raised-button color="primary" class="full-width margin-bottom" type="submit"
-              [disabled]="formGroup.invalid">
+      <button mat-raised-button color="primary" class="full-width margin-bottom" type="submit">
         Login
       </button>
 

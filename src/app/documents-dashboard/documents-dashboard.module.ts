@@ -43,6 +43,7 @@ export const dashboardRoutes: Routes = [
   {
     path: ':id',
     component: DocumentsDashboardDocumentComponent,
+    canActivate: [AuthGuard]
   }
 ];
 

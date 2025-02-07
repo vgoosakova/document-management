@@ -14,14 +14,27 @@ export class ErrorHandlerService {
   }
 
   /**
-   * Displays an error notification.
+   * Displays an error message.
    *
    * @param message - The error message to display.
    */
-  showError(message: string): void {
+  showErrorMessage(message: string): void {
     this.snackBar.open(message, 'Close', {
       duration: 5000,
       panelClass: ['error-snackbar'],
+      verticalPosition: 'top',
+    });
+  }
+
+  /**
+   * Displays a success message.
+   *
+   * @param message - The success message to display.
+   */
+  showSuccessMessage(message: string): void {
+    this.snackBar.open(message, 'Close', {
+      duration: 5000,
+      panelClass: ['success-snackbar'],
       verticalPosition: 'top',
     });
   }

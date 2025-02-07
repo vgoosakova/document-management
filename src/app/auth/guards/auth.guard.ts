@@ -15,7 +15,6 @@ export class AuthGuard implements CanActivate {
       tap(isAuthenticated => {
         if (!isAuthenticated) {
           const redirect = state.url === '/' || state.url === '' ? null : state.url;
-          console.log(redirect)
           this.store.dispatch(new Navigate(['/', routerLinks.auth, routerLinks.login], {redirect}));
           return false;
         }

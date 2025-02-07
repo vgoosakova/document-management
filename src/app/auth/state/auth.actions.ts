@@ -43,13 +43,6 @@ export class Registration {
   }
 }
 
-export class RegistrationSuccess {
-  static readonly type = `${uniqueStateIdentifier} ${RegistrationSuccess.name}`;
-
-  constructor(public user: User) {
-  }
-}
-
 export class RegistrationFail {
   static readonly type = `${uniqueStateIdentifier} ${RegistrationFail.name}`;
 

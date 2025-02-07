@@ -23,17 +23,20 @@ import {
 export class DocumentsDashboardRootComponent implements OnInit {
   protected readonly progressStatuses = progressStatuses;
   protected readonly userRole = UserRole;
+
   private readonly destroyRef = inject(DestroyRef);
   private readonly store = inject(Store);
+  private readonly dialog = inject(MatDialog);
+
   readonly user$: Observable<AuthStateModel['user']> = this.store.select(AuthState.user);
   readonly loadDocumentsListStatus$: Observable<DocumentStateModel['loadDocumentsListStatus']> = this.store.select(DocumentsDashboardState.loadDocumentsListStatus);
   readonly manageDocumentStatus$: Observable<DocumentStateModel['manageDocumentStatus']> = this.store.select(DocumentsDashboardState.manageDocumentStatus);
   readonly performDocumentActionStatus$: Observable<DocumentStateModel['performDocumentActionStatus']> = this.store.select(DocumentsDashboardState.performDocumentActionStatus);
+
   documentsList: Signal<DocumentModel[]> = toSignal(
     this.store.select(DocumentsDashboardState.documentsList),
     {initialValue: []}
   );
-  private readonly dialog = inject(MatDialog);
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
