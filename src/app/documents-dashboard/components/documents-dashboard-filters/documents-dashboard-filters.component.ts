@@ -1,10 +1,20 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, inject, OnInit, Output} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output
+} from '@angular/core';
 import {AuthStateModel, UserRole} from '../../../auth/state/auth.model';
 import {DocumentsListFilters, DocumentStatus, documentStatusRelatedName} from '../../state/documents-dashboard.model';
 import {Observable} from 'rxjs';
 import {Store} from '@ngxs/store';
 import {AuthState} from '../../../auth/state/auth.state';
 import {ActivatedRoute} from '@angular/router';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-documents-dashboard-filters',
@@ -13,7 +23,8 @@ import {ActivatedRoute} from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DocumentsDashboardFiltersComponent implements OnInit {
-  store = inject(Store)
+  @Input() isReviewer!: boolean;
+  store = inject(Store);
   readonly user$: Observable<AuthStateModel['user']> = this.store.select(AuthState.user);
   filters: Partial<DocumentsListFilters> = {
     status: undefined,
@@ -23,15 +34,14 @@ export class DocumentsDashboardFiltersComponent implements OnInit {
   @Output() filtersChanged = new EventEmitter<Partial<DocumentsListFilters>>();
   protected readonly userRole = UserRole;
   protected readonly documentStatus = DocumentStatus;
-  protected readonly documentStatusRelatedNames = documentStatusRelatedName;
+  protected readonly documentStatusRelatedName = documentStatusRelatedName;
+  private readonly destroyRef = inject(DestroyRef);
 
-  constructor(
-    private readonly activatedRoute: ActivatedRoute,
-  ) {
+  constructor(private readonly activatedRoute: ActivatedRoute) {
   }
 
   ngOnInit() {
-    this.activatedRoute.queryParams.subscribe(params => {
+    this.activatedRoute.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       this.filters.status = params['status'] || null;
       this.filters.creator = params['creator'] || undefined;
     });

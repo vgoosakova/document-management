@@ -1,18 +1,30 @@
 import {Injectable} from '@angular/core';
 import {Action, Selector, State, StateContext} from '@ngxs/store';
-import {defaultDocumentState, DocumentStateModel} from './documents-dashboard.model';
+import {defaultDocumentState, DocumentStateModel, DocumentStatus} from './documents-dashboard.model';
 import {DocumentsDashboardService} from '../services/documents-dashboard.service';
 import {ErrorHandlerService} from '../../shared/error-handler.service';
 import {
+  ChangeDocumentStatus,
+  ChangeDocumentStatusFail,
+  ChangeDocumentStatusSuccess,
   CreateDocument,
   CreateDocumentFail,
   CreateDocumentSuccess,
+  DeleteDocument,
+  DeleteDocumentFail,
+  DeleteDocumentSuccess,
   LoadDocument,
   LoadDocumentFail,
   LoadDocumentsList,
   LoadDocumentsListFail,
   LoadDocumentsListSuccess,
   LoadDocumentSuccess,
+  RevokeDocumentReview,
+  RevokeDocumentReviewFail,
+  RevokeDocumentReviewSuccess,
+  SendDocumentToReview,
+  SendDocumentToReviewFail,
+  SendDocumentToReviewSuccess,
   UpdateDocument,
   UpdateDocumentFail,
   UpdateDocumentSuccess
@@ -155,23 +167,29 @@ export class DocumentsDashboardState {
   @Action(UpdateDocument)
   updateDocument(ctx: StateContext<DocumentStateModel>, {
     documentId,
-    updatedDocument,
+    name,
   }: UpdateDocument): void {
     ctx.patchState({
       manageDocumentStatus: progressStatuses.inProgress,
       lastManageDocumentError: null,
     });
 
-    this.documentsDashboardService.updateDocument(documentId, updatedDocument).subscribe({
-      next: document => ctx.dispatch(new UpdateDocumentSuccess(document)),
+    this.documentsDashboardService.updateDocument(documentId, name).subscribe({
+      next: () => ctx.dispatch(new UpdateDocumentSuccess(documentId, name)),
       error: err => ctx.dispatch(new UpdateDocumentFail(err)),
     });
   }
 
   @Action(UpdateDocumentSuccess)
-  updateDocumentSuccess(ctx: StateContext<DocumentStateModel>, {updatedDocument}: UpdateDocumentSuccess): void {
+  updateDocumentSuccess(ctx: StateContext<DocumentStateModel>, {documentId, name}: UpdateDocumentSuccess): void {
+    const state = ctx.getState();
+    const updatedList = state.documentsList.map(doc =>
+      doc.id === documentId ? {...doc, name} : doc
+    );
+
     ctx.patchState({
       manageDocumentStatus: progressStatuses.succeed,
+      documentsList: updatedList,
     });
   }
 
@@ -180,6 +198,155 @@ export class DocumentsDashboardState {
     ctx.patchState({
       manageDocumentStatus: progressStatuses.interrupted,
       lastManageDocumentError: error,
+    });
+
+    this.errorHandler.showError(error.error.message);
+  }
+
+  @Action(DeleteDocument)
+  deleteDocument(ctx: StateContext<DocumentStateModel>, {documentId}: DeleteDocument): void {
+    ctx.patchState({
+      performDocumentActionStatus: progressStatuses.inProgress,
+      lastPerformDocumentActionError: null,
+    });
+
+    this.documentsDashboardService.deleteDocument(documentId).subscribe({
+      next: () => ctx.dispatch(new DeleteDocumentSuccess(documentId)),
+      error: err => ctx.dispatch(new DeleteDocumentFail(err)),
+    });
+  }
+
+  @Action(DeleteDocumentSuccess)
+  deleteDocumentSuccess(ctx: StateContext<DocumentStateModel>, {documentId}: DeleteDocumentSuccess): void {
+    const state = ctx.getState();
+    const updatedList = state.documentsList.filter(doc => doc.id !== documentId);
+
+    ctx.patchState({
+      performDocumentActionStatus: progressStatuses.succeed,
+      documentsList: updatedList,
+      documentsItemsCount: state.documentsItemsCount - 1,
+    });
+  }
+
+  @Action(DeleteDocumentFail)
+  deleteDocumentFail(ctx: StateContext<DocumentStateModel>, {error}: DeleteDocumentFail): void {
+    ctx.patchState({
+      performDocumentActionStatus: progressStatuses.interrupted,
+      lastPerformDocumentActionError: error,
+    });
+
+    this.errorHandler.showError(error.error.message);
+  }
+
+  @Action(ChangeDocumentStatus)
+  changeDocumentStatus(ctx: StateContext<DocumentStateModel>, {
+    documentId,
+    status,
+  }: ChangeDocumentStatus): void {
+    ctx.patchState({
+      performDocumentActionStatus: progressStatuses.inProgress,
+      lastPerformDocumentActionError: null,
+    });
+
+    this.documentsDashboardService.changeDocumentStatus(documentId, status).subscribe({
+      next: () => ctx.dispatch(new ChangeDocumentStatusSuccess(documentId, status)),
+      error: err => ctx.dispatch(new ChangeDocumentStatusFail(err)),
+    });
+  }
+
+  @Action(ChangeDocumentStatusSuccess)
+  changeDocumentStatusSuccess(ctx: StateContext<DocumentStateModel>, {
+    documentId,
+    status
+  }: ChangeDocumentStatusSuccess): void {
+    const state = ctx.getState();
+    const updatedList = state.documentsList.map(doc =>
+      doc.id === documentId ? {...doc, status} : doc
+    );
+
+    ctx.patchState({
+      performDocumentActionStatus: progressStatuses.succeed,
+      documentsList: updatedList,
+    });
+  }
+
+  @Action(ChangeDocumentStatusFail)
+  changeDocumentStatusFail(ctx: StateContext<DocumentStateModel>, {error}: ChangeDocumentStatusFail): void {
+    ctx.patchState({
+      performDocumentActionStatus: progressStatuses.interrupted,
+      lastPerformDocumentActionError: error,
+    });
+
+    this.errorHandler.showError(error.error.message);
+  }
+
+  @Action(RevokeDocumentReview)
+  revokeDocumentReview(ctx: StateContext<DocumentStateModel>, {documentId,}: RevokeDocumentReview): void {
+    ctx.patchState({
+      performDocumentActionStatus: progressStatuses.inProgress,
+      lastPerformDocumentActionError: null,
+    });
+
+    this.documentsDashboardService.revokeDocumentReview(documentId).subscribe({
+      next: () => ctx.dispatch(new RevokeDocumentReviewSuccess(documentId)),
+      error: err => ctx.dispatch(new RevokeDocumentReviewFail(err)),
+    });
+  }
+
+  @Action(RevokeDocumentReviewSuccess)
+  revokeDocumentReviewSuccess(ctx: StateContext<DocumentStateModel>, {documentId}: RevokeDocumentReviewSuccess): void {
+    const state = ctx.getState();
+    const updatedList = state.documentsList.map(doc =>
+      doc.id === documentId ? {...doc, status: DocumentStatus.revoke} : doc
+    );
+
+    ctx.patchState({
+      performDocumentActionStatus: progressStatuses.succeed,
+      documentsList: updatedList,
+    });
+  }
+
+  @Action(RevokeDocumentReviewFail)
+  revokeDocumentReviewFail(ctx: StateContext<DocumentStateModel>, {error}: ChangeDocumentStatusFail): void {
+    ctx.patchState({
+      performDocumentActionStatus: progressStatuses.interrupted,
+      lastPerformDocumentActionError: error,
+    });
+
+    this.errorHandler.showError(error.error.message);
+  }
+
+  @Action(SendDocumentToReview)
+  sendDocumentToReview(ctx: StateContext<DocumentStateModel>, {documentId,}: SendDocumentToReview): void {
+    ctx.patchState({
+      performDocumentActionStatus: progressStatuses.inProgress,
+      lastPerformDocumentActionError: null,
+    });
+
+    this.documentsDashboardService.sendDocumentToReview(documentId).subscribe({
+      next: () => ctx.dispatch(new SendDocumentToReviewSuccess(documentId)),
+      error: err => ctx.dispatch(new SendDocumentToReviewFail(err)),
+    });
+  }
+
+  @Action(SendDocumentToReviewSuccess)
+  sendDocumentToReviewSuccess(ctx: StateContext<DocumentStateModel>, {documentId}: SendDocumentToReviewSuccess): void {
+    const state = ctx.getState();
+    const updatedList = state.documentsList.map(doc =>
+      doc.id === documentId ? {...doc, status: DocumentStatus.readyForReview} : doc
+    );
+
+    ctx.patchState({
+      performDocumentActionStatus: progressStatuses.succeed,
+      documentsList: updatedList,
+    });
+  }
+
+  @Action(SendDocumentToReviewFail)
+  sendDocumentToReviewFail(ctx: StateContext<DocumentStateModel>, {error}: ChangeDocumentStatusFail): void {
+    ctx.patchState({
+      performDocumentActionStatus: progressStatuses.interrupted,
+      lastPerformDocumentActionError: error,
     });
 
     this.errorHandler.showError(error.error.message);

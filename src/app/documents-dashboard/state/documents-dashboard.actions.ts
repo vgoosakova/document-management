@@ -1,4 +1,4 @@
-import {DocumentModel, DocumentCreateModel, DocumentsListFilters} from './documents-dashboard.model';
+import {DocumentModel, DocumentsListFilters} from './documents-dashboard.model';
 import {HttpErrorResponse} from '@angular/common/http';
 import {BackendPagination} from '../../core/core.symbols';
 
@@ -29,7 +29,7 @@ export class LoadDocumentsListFail {
 export class CreateDocument {
   static readonly type = `${uniqueStateIdentifier} ${CreateDocument.name}`;
 
-  constructor(public documentData: DocumentCreateModel) {
+  constructor(public documentData: FormData) {
   }
 }
 
@@ -71,14 +71,14 @@ export class LoadDocumentFail {
 export class UpdateDocument {
   static readonly type = `${uniqueStateIdentifier} ${UpdateDocument.name}`;
 
-  constructor(public documentId: DocumentModel['id'], public updatedDocument: DocumentModel['name']) {
+  constructor(public documentId: DocumentModel['id'], public name: DocumentModel['name']) {
   }
 }
 
 export class UpdateDocumentSuccess {
   static readonly type = `${uniqueStateIdentifier} ${UpdateDocumentSuccess.name}`;
 
-  constructor(public updatedDocument: DocumentModel) {
+  constructor(public documentId: DocumentModel['id'], public name: DocumentModel['name']) {
   }
 }
 
@@ -155,14 +155,14 @@ export class RevokeDocumentReviewFail {
 export class ChangeDocumentStatus {
   static readonly type = `${uniqueStateIdentifier} ${ChangeDocumentStatus.name}`;
 
-  constructor(public documentId: DocumentModel['id']) {
+  constructor(public documentId: DocumentModel['id'], public status: DocumentModel['status']) {
   }
 }
 
 export class ChangeDocumentStatusSuccess {
   static readonly type = `${uniqueStateIdentifier} ${ChangeDocumentStatusSuccess.name}`;
 
-  constructor(public documentId: DocumentModel['id']) {
+  constructor(public documentId: DocumentModel['id'], public status: DocumentModel['status']) {
   }
 }
 

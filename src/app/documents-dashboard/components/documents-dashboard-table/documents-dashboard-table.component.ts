@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   EventEmitter,
   inject,
   Input,
@@ -16,13 +17,25 @@ import {
   DocumentsListFilters,
   DocumentStateModel,
   DocumentStatus,
-  documentStatusRelatedName,
+  documentStatusRelatedName
 } from '../../state/documents-dashboard.model';
-import {MatDialog} from '@angular/material/dialog';
-import {Observable} from 'rxjs';
+import {filter, Observable} from 'rxjs';
 import {DocumentsDashboardState} from '../../state/documents-dashboard.state';
 import {Store} from '@ngxs/store';
 import {ActivatedRoute} from '@angular/router';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {MatDialog} from '@angular/material/dialog';
+import {
+  DocumentsDashboardEditDialogComponent
+} from '../documents-dashboard-edit-dialog/documents-dashboard-edit-dialog.component';
+import {
+  ChangeDocumentStatus,
+  DeleteDocument,
+  RevokeDocumentReview,
+  SendDocumentToReview,
+  UpdateDocument
+} from '../../state/documents-dashboard.actions';
+import {ConfirmDialogComponent} from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-documents-dashboard-table',
@@ -38,22 +51,22 @@ export class DocumentsDashboardTableComponent implements OnInit {
 
   @Output() filtersChanged = new EventEmitter<DocumentsListFilters>();
 
-  pageSizeOptions = [1, 5, 10, 25];
+  pageSizeOptions = [5, 10, 25];
   pageIndex = signal(0);
   pageSize = signal(10);
   sortField = signal<string | null>(null);
   sortDirection = signal<'asc' | 'desc' | ''>('');
   protected readonly documentStatus = DocumentStatus;
-  private readonly store = new Store();
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly store = inject(Store);
   readonly documentsItemsCount$: Observable<DocumentStateModel['documentsItemsCount']> = this.store.select(DocumentsDashboardState.documentsItemsCount);
+  private readonly dialog = inject(MatDialog);
 
-  constructor(
-    private readonly activatedRoute: ActivatedRoute,
-  ) {
+  constructor(private readonly activatedRoute: ActivatedRoute) {
   }
 
   ngOnInit() {
-    this.activatedRoute.queryParams.subscribe(params => {
+    this.activatedRoute.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       const page = Number(params['page']);
       this.pageIndex.set(isNaN(page) || page < 1 ? 0 : page - 1);
 
@@ -62,8 +75,73 @@ export class DocumentsDashboardTableComponent implements OnInit {
     });
   }
 
+  revokeDocument(document: DocumentModel): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '350px',
+      data: {
+        title: 'Revoke Document Review',
+        message: `Are you sure you want to revoke "${document.name}"?`,
+        confirmText: 'Confirm',
+        cancelText: 'Cancel',
+      },
+    });
+
+    dialogRef.afterClosed().pipe(filter(Boolean)).subscribe(() => {
+      this.store.dispatch(new RevokeDocumentReview(document.id));
+    });
+  }
+
+  sendDocumentToReview(document: DocumentModel): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '350px',
+      data: {
+        title: 'Send Document to Review',
+        message: `Are you sure you want to send document "${document.name}" to review?`,
+        confirmText: 'Confirm',
+        cancelText: 'Cancel',
+      },
+    });
+
+    dialogRef.afterClosed().pipe(filter(Boolean)).subscribe(() => {
+      this.store.dispatch(new SendDocumentToReview(document.id));
+    });
+  }
+
+  deleteDocument(document: DocumentModel): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '350px',
+      data: {
+        title: 'Delete Document',
+        message: `Are you sure you want to delete "${document.name}"?`,
+        confirmText: 'Confirm',
+        cancelText: 'Cancel',
+      },
+    });
+
+    dialogRef.afterClosed().pipe(filter(Boolean)).subscribe(() => {
+      this.store.dispatch(new DeleteDocument(document.id));
+    });
+  }
+
 
   editDocument(document: DocumentModel) {
+    const dialogRef = this.dialog.open(DocumentsDashboardEditDialogComponent, {
+      width: '400px',
+      data: {
+        id: document.id,
+        name: document.name,
+        status: document.status,
+        isReviewer: this.isReviewer,
+      },
+    });
+
+    dialogRef.afterClosed().pipe(filter(Boolean)).subscribe(result => {
+      if (this.isReviewer) {
+        this.store.dispatch(new ChangeDocumentStatus(document.id, result.status));
+      } else {
+        this.store.dispatch(new UpdateDocument(document.id, result.name));
+      }
+    });
   }
 
   updateFilters() {

@@ -17,11 +17,19 @@ import {MatPaginator} from '@angular/material/paginator';
 import {MatSortModule} from '@angular/material/sort';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatInput} from '@angular/material/input';
 import {
   DocumentsDashboardFiltersComponent
 } from './components/documents-dashboard-filters/documents-dashboard-filters.component';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {
+  DocumentsDashboardEditDialogComponent
+} from './components/documents-dashboard-edit-dialog/documents-dashboard-edit-dialog.component';
+import {MatDialogModule} from '@angular/material/dialog';
+import {
+  DocumentsDashboardCreateDialogComponent
+} from './components/documents-dashboard-create-dialog/documents-dashboard-create-dialog.component';
 
 export const dashboardRoutes: Routes = [
   {
@@ -32,7 +40,7 @@ export const dashboardRoutes: Routes = [
 ];
 
 @NgModule({
-  declarations: [DocumentsDashboardRootComponent, DocumentsDashboardTableComponent, DocumentsDashboardFiltersComponent],
+  declarations: [DocumentsDashboardRootComponent, DocumentsDashboardTableComponent, DocumentsDashboardFiltersComponent, DocumentsDashboardEditDialogComponent, DocumentsDashboardCreateDialogComponent],
   imports: [
     CommonModule,
     RouterLink,
@@ -48,7 +56,10 @@ export const dashboardRoutes: Routes = [
     MatFormFieldModule,
     MatSelectModule,
     FormsModule,
-    MatInput
+    MatInput,
+    MatTooltipModule,
+    MatDialogModule,
+    ReactiveFormsModule
   ],
   providers: [DocumentsDashboardService]
 })

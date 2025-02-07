@@ -1,5 +1,9 @@
-<mat-progress-bar *ngIf="(loadDocumentsListStatus$ | async) === progressStatuses.inProgress"
-                  mode="indeterminate"></mat-progress-bar>
+<mat-progress-bar
+  *ngIf="(loadDocumentsListStatus$ | async) === progressStatuses.inProgress ||
+  (manageDocumentStatus$ | async) === progressStatuses.inProgress ||
+  (performDocumentActionStatus$ | async) === progressStatuses.inProgress"
+  mode="indeterminate"
+></mat-progress-bar>
 
 <div class="dashboard-container">
 
@@ -10,15 +14,20 @@
     Add Document
   </button>
 
-  <app-documents-dashboard-filters (filtersChanged)="onFiltersChanged($event)"></app-documents-dashboard-filters>
-
-  <ng-container *ngIf="documentsList().length; else noDocuments">
-    <app-documents-dashboard-table
-      [documents]="documentsList"
-      [isReviewer]="(user$ | async)?.role === userRole.reviewer"
+  @if (user$ | async; as user) {
+    <app-documents-dashboard-filters
+      [isReviewer]="user.role === userRole.reviewer"
       (filtersChanged)="onFiltersChanged($event)"
-    ></app-documents-dashboard-table>
-  </ng-container>
+    ></app-documents-dashboard-filters>
+
+    <ng-container *ngIf="documentsList().length; else noDocuments">
+      <app-documents-dashboard-table
+        [documents]="documentsList"
+        [isReviewer]="user.role === userRole.reviewer"
+        (filtersChanged)="onFiltersChanged($event)"
+      ></app-documents-dashboard-table>
+    </ng-container>
+  }
 
   <ng-template #noDocuments>
     <p class="dashboard-container__no-documents-text">No documents yet</p>

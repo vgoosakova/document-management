@@ -58,7 +58,7 @@ export interface DocumentsListFilters {
 export interface DocumentModel {
   creator: User;
   id: string;
-  name: number;
+  name: string;
   status: string;
   fileUrl: string;
   updatedAt: string;
