@@ -36,6 +36,7 @@ import {
   UpdateDocument
 } from '../../state/documents-dashboard.actions';
 import {ConfirmDialogComponent} from '../../../shared/components/confirm-dialog/confirm-dialog.component';
+import {routerLinks} from '../../../core/enums';
 
 @Component({
   selector: 'app-documents-dashboard-table',
@@ -57,6 +58,7 @@ export class DocumentsDashboardTableComponent implements OnInit {
   sortField = signal<string | null>(null);
   sortDirection = signal<'asc' | 'desc' | ''>('');
   protected readonly documentStatus = DocumentStatus;
+  protected readonly routerLinks = routerLinks;
   private readonly destroyRef = inject(DestroyRef);
   private readonly store = inject(Store);
   readonly documentsItemsCount$: Observable<DocumentStateModel['documentsItemsCount']> = this.store.select(DocumentsDashboardState.documentsItemsCount);
@@ -122,7 +124,6 @@ export class DocumentsDashboardTableComponent implements OnInit {
       this.store.dispatch(new DeleteDocument(document.id));
     });
   }
-
 
   editDocument(document: DocumentModel) {
     const dialogRef = this.dialog.open(DocumentsDashboardEditDialogComponent, {

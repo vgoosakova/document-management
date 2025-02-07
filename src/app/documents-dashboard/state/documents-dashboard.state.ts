@@ -19,6 +19,7 @@ import {
   LoadDocumentsListFail,
   LoadDocumentsListSuccess,
   LoadDocumentSuccess,
+  ResetDocumentDetails,
   RevokeDocumentReview,
   RevokeDocumentReviewFail,
   RevokeDocumentReviewSuccess,
@@ -118,8 +119,11 @@ export class DocumentsDashboardState {
 
   @Action(CreateDocumentSuccess)
   createDocumentSuccess(ctx: StateContext<DocumentStateModel>, {currentDocument}: CreateDocumentSuccess): void {
+    const state = ctx.getState();
+    const updatedList = [currentDocument, ...state.documentsList]
     ctx.patchState({
       manageDocumentStatus: progressStatuses.succeed,
+      documentsList: updatedList
     });
   }
 
@@ -350,5 +354,12 @@ export class DocumentsDashboardState {
     });
 
     this.errorHandler.showError(error.error.message);
+  }
+
+  @Action(ResetDocumentDetails)
+  resetDocumentDetails(ctx: StateContext<DocumentStateModel>): void {
+    ctx.patchState({
+      currentDocument: null
+    });
   }
 }

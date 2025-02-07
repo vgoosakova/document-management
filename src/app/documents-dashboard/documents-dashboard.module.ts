@@ -30,6 +30,9 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {
   DocumentsDashboardCreateDialogComponent
 } from './components/documents-dashboard-create-dialog/documents-dashboard-create-dialog.component';
+import {
+  DocumentsDashboardDocumentComponent
+} from './containers/documents-dashboard-document/documents-dashboard-document.component';
 
 export const dashboardRoutes: Routes = [
   {
@@ -37,10 +40,21 @@ export const dashboardRoutes: Routes = [
     component: DocumentsDashboardRootComponent,
     canActivate: [AuthGuard]
   },
+  {
+    path: ':id',
+    component: DocumentsDashboardDocumentComponent,
+  }
 ];
 
 @NgModule({
-  declarations: [DocumentsDashboardRootComponent, DocumentsDashboardTableComponent, DocumentsDashboardFiltersComponent, DocumentsDashboardEditDialogComponent, DocumentsDashboardCreateDialogComponent],
+  declarations: [
+    DocumentsDashboardRootComponent,
+    DocumentsDashboardTableComponent,
+    DocumentsDashboardFiltersComponent,
+    DocumentsDashboardEditDialogComponent,
+    DocumentsDashboardCreateDialogComponent,
+    DocumentsDashboardDocumentComponent
+  ],
   imports: [
     CommonModule,
     RouterLink,

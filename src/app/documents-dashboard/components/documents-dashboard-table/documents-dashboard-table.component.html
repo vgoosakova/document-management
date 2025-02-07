@@ -20,7 +20,7 @@
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef>Actions</th>
     <td mat-cell *matCellDef="let document">
-      <button mat-icon-button matTooltip="View">
+      <button mat-icon-button matTooltip="View" [routerLink]="['/', routerLinks.dashboard, document.id]">
         <mat-icon>visibility</mat-icon>
       </button>
       @if (!isReviewer || (isReviewer && document.status === documentStatus.readyForReview || document.status === documentStatus.underReview)) {

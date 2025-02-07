@@ -1,14 +1,18 @@
 import {ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, Signal} from '@angular/core';
 import {Store} from '@ngxs/store';
-import {LoadDocumentsList} from '../../state/documents-dashboard.actions';
+import {CreateDocument, LoadDocumentsList} from '../../state/documents-dashboard.actions';
 import {DocumentsDashboardState} from '../../state/documents-dashboard.state';
 import {DocumentModel, DocumentsListFilters, DocumentStateModel} from '../../state/documents-dashboard.model';
 import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
-import {Observable} from 'rxjs';
+import {filter, Observable} from 'rxjs';
 import {progressStatuses} from '../../../core/enums';
 import {AuthState} from '../../../auth/state/auth.state';
 import {AuthStateModel, UserRole} from '../../../auth/state/auth.model';
 import {ActivatedRoute, Router} from '@angular/router';
+import {MatDialog} from '@angular/material/dialog';
+import {
+  DocumentsDashboardCreateDialogComponent
+} from '../../components/documents-dashboard-create-dialog/documents-dashboard-create-dialog.component';
 
 @Component({
   selector: 'app-documents-dashboard-root',
@@ -29,6 +33,7 @@ export class DocumentsDashboardRootComponent implements OnInit {
     this.store.select(DocumentsDashboardState.documentsList),
     {initialValue: []}
   );
+  private readonly dialog = inject(MatDialog);
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
@@ -63,6 +68,16 @@ export class DocumentsDashboardRootComponent implements OnInit {
 
     this.router.navigate([], {
       queryParams: Object.fromEntries(Object.entries(queryParams).filter(([_, v]) => v != null))
+    });
+  }
+
+  openAddDocumentDialog(): void {
+    const dialogRef = this.dialog.open(DocumentsDashboardCreateDialogComponent, {
+      width: '450px',
+    });
+
+    dialogRef.afterClosed().pipe(filter(Boolean)).subscribe((formData: FormData) => {
+      this.store.dispatch(new CreateDocument(formData));
     });
   }
 }

@@ -1,0 +1,18 @@
+.document {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 1200px;
+  padding: 0 20px;
+}
+
+.icon {
+  margin-top: 20px;
+  margin-left: 5px;
+}
+
+.document__viewer {
+  width: 90%;
+  max-width: 1000px;
+  height: 70vh;
+}

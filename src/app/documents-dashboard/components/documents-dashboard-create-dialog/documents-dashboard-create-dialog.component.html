@@ -1,0 +1,49 @@
+<h2 mat-dialog-title>Add New Document</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="formGroup">
+    <mat-form-field class="full-width">
+      <mat-label>Document Name</mat-label>
+      <input matInput formControlName="name"/>
+      <mat-error *ngIf="name.invalid && (name.dirty || name.touched)">
+        {{ nameError }}
+      </mat-error>
+    </mat-form-field>
+
+    <div
+      class="dropzone"
+      (dragover)="$event.preventDefault()"
+      (drop)="onDrop($event)"
+      (click)="fileInput.click()"
+    >
+      <input
+        type="file"
+        #fileInput
+        (change)="onFileChange($event)"
+        hidden
+        accept="application/pdf"
+      />
+      @if (file) {
+        <mat-icon class="file-icon">description</mat-icon>
+        <p class="file-name">{{ file.name }}</p>
+        <button mat-icon-button color="warn" (click)="clearFile()">
+          <mat-icon>delete</mat-icon>
+        </button>
+      } @else {
+        <mat-icon class="upload-icon">cloud_upload</mat-icon>
+        <p>Drag & Drop a file here or click to select</p>
+      }
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="button-group">
+  <button mat-button color="warn" (click)="close()">Cancel</button>
+  <button mat-button color="primary" (click)="submit(documentStatus.draft)" [disabled]="formGroup.invalid">
+    Save as Draft
+  </button>
+  <button mat-flat-button color="primary" (click)="submit(documentStatus.readyForReview)"
+          [disabled]="formGroup.invalid">
+    Submit for Review
+  </button>
+</mat-dialog-actions>

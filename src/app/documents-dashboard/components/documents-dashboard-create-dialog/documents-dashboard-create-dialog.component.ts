@@ -1,8 +1,7 @@
-import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, Inject, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {Store} from '@ngxs/store';
-import {CreateDocument} from '../../state/documents-dashboard.actions';
+import {DocumentStatus} from '../../state/documents-dashboard.model';
 
 interface DocumentData {
   id: string;
@@ -18,42 +17,89 @@ interface DocumentData {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DocumentsDashboardCreateDialogComponent {
-  documentForm: FormGroup;
-  selectedFile: File | null = null;
+  formGroup: FormGroup;
+  file: File | null = null;
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+  protected readonly documentStatus = DocumentStatus;
 
   constructor(
-    private readonly fb: FormBuilder,
-    private readonly store: Store,
-    public dialogRef: MatDialogRef<DocumentsDashboardCreateDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    private fb: FormBuilder,
+    private dialogRef: MatDialogRef<DocumentsDashboardCreateDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: DocumentData
   ) {
-    this.documentForm = this.fb.group({
-      name: ['', Validators.required],
-      file: [null, Validators.required],
+    this.formGroup = this.fb.group({
+      name: this.fb.control('', {
+        nonNullable: true,
+        validators: [Validators.required, Validators.minLength(3), Validators.maxLength(100)]
+      }),
+      file: this.fb.control('', {
+        nonNullable: true,
+        validators: [Validators.required]
+      })
     });
   }
 
-  onFileSelected(event: Event): void {
+  public get name() {
+    return this.formGroup.controls['name'];
+  }
+
+  public get nameError(): string {
+    if (this.name.hasError('required')) return 'Name is required';
+    if (this.name.hasError('minLength')) return 'Name must be at least 3 characters';
+    if (this.name.hasError('maxLength')) return 'Name cannot exceed 100 characters';
+    return '';
+  }
+
+  onFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files?.length) {
-      this.selectedFile = input.files[0];
+      const file = input.files[0];
+      if (this.isPdf(file)) {
+        this.file = file;
+        this.formGroup.patchValue({file: this.file});
+      } else {
+        alert('Only PDF files are allowed.');
+      }
     }
   }
 
-  submitDocument(status: 'draft' | 'readyForReview'): void {
-    if (this.documentForm.invalid || !this.selectedFile) return;
+  onDrop(event: DragEvent): void {
+    event.preventDefault();
+    if (event.dataTransfer?.files.length) {
+      const file = event.dataTransfer.files[0];
+      if (this.isPdf(file)) {
+        this.file = file;
+        this.formGroup.patchValue({file: this.file});
+      } else {
+        alert('Only PDF files are allowed.');
+      }
+    }
+  }
 
-    const formData = new FormData();
-    formData.append('name', this.documentForm.value.name);
-    formData.append('file', this.selectedFile);
-    formData.append('status', status);
+  clearFile(): void {
+    this.file = null;
+    this.formGroup.patchValue({file: null});
+    if (this.fileInput) {
+      this.fileInput.nativeElement.value = '';
+    }
+  }
 
-    this.store.dispatch(new CreateDocument(formData)).subscribe(() => {
-      this.dialogRef.close(true);
-    });
+  submit(status: DocumentStatus.draft | DocumentStatus.readyForReview): void {
+    if (this.formGroup.valid && this.file) {
+      const formData = new FormData();
+      formData.append('name', this.name.value);
+      formData.append('file', this.file);
+      formData.append('status', status);
+
+      this.dialogRef.close(formData);
+    }
   }
 
   close(): void {
     this.dialogRef.close();
+  }
+
+  private isPdf(file: File): boolean {
+    return file.type === 'application/pdf';
   }
 }

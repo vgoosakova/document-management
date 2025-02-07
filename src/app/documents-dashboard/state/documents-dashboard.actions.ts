@@ -172,3 +172,7 @@ export class ChangeDocumentStatusFail {
   constructor(public error: HttpErrorResponse) {
   }
 }
+
+export class ResetDocumentDetails {
+  static readonly type = `${uniqueStateIdentifier} ${ResetDocumentDetails.name}`;
+}

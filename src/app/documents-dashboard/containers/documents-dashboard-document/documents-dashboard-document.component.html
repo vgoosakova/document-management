@@ -1,0 +1,13 @@
+<mat-progress-bar
+  *ngIf="(manageDocumentStatus$ | async) === progressStatuses.inProgress"
+  mode="indeterminate"
+></mat-progress-bar>
+<button class="icon" mat-icon-button matTooltip="Back to list" [routerLink]="['/', routerLinks.dashboard]">
+  <mat-icon>arrow_back</mat-icon>
+</button>
+<div class="document">
+  @if (currentDocument$ | async; as document) {
+    <h3>{{ document.name }}</h3>
+  }
+  <div #viewerContainer class="document__viewer"></div>
+</div>

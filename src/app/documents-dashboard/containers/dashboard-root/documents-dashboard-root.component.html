@@ -7,14 +7,16 @@
 
 <div class="dashboard-container">
 
-  <h3>Document Management</h3>
-
-  <button mat-raised-button color="primary">
-    <mat-icon>add</mat-icon>
-    Add Document
-  </button>
+  <h3>Document List</h3>
 
   @if (user$ | async; as user) {
+    @if (user.role !== userRole.reviewer) {
+      <button mat-raised-button color="primary" (click)="openAddDocumentDialog()">
+        <mat-icon>add</mat-icon>
+        Add Document
+      </button>
+    }
+
     <app-documents-dashboard-filters
       [isReviewer]="user.role === userRole.reviewer"
       (filtersChanged)="onFiltersChanged($event)"

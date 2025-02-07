@@ -1,3 +1,32 @@
-.dialog-content {
-  padding-top: 10px !important;
+.dropzone {
+  border: 2px dashed #3f51b5;
+  border-radius: 10px;
+  padding: 20px;
+  cursor: pointer;
+  background: rgba(63, 81, 181, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 10px;
+
+  &:hover {
+    background: rgba(63, 81, 181, 0.2);
+  }
+
+  p {
+    margin: 0;
+    color: #3f51b5;
+    font-weight: 500;
+  }
+
+  .file-icon,
+  .upload-icon {
+    color: #3f51b5;
+  }
+}
+
+.button-group {
+  margin-top: 20px;
+  justify-content: space-between;
 }
