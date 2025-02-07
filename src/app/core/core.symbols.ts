@@ -9,3 +9,8 @@ export interface BackendPagination<T> {
   /** List of the results. */
   results: T;
 }
+
+/** Size of table page
+ * May be used to display table with pagination.
+ */
+export const PAGINATION_PAGE_DEFAULT_SIZE = 10;

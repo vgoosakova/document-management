@@ -13,6 +13,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {
   DocumentsDashboardCreateDialogComponent
 } from '../../components/documents-dashboard-create-dialog/documents-dashboard-create-dialog.component';
+import {PAGINATION_PAGE_DEFAULT_SIZE} from '../../../core/core.symbols';
 
 @Component({
   selector: 'app-documents-dashboard-root',
@@ -49,7 +50,7 @@ export class DocumentsDashboardRootComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(params => this.fetchDocuments({
         page: +params['page'] || 1,
-        size: +params['size'] || 10,
+        size: +params['size'] || PAGINATION_PAGE_DEFAULT_SIZE,
         sort: params['sort'] ?? null,
         status: params['status'] ?? null,
         creator: params['creator'] ?? null
@@ -63,7 +64,7 @@ export class DocumentsDashboardRootComponent implements OnInit {
   onFiltersChanged(filters: Partial<DocumentsListFilters>) {
     const queryParams: Partial<DocumentsListFilters> = {
       page: (filters.page ?? Number(this.activatedRoute.snapshot.queryParams['page'])) || 1,
-      size: (filters.size ?? Number(this.activatedRoute.snapshot.queryParams['size'])) || 10,
+      size: (filters.size ?? Number(this.activatedRoute.snapshot.queryParams['size'])) || PAGINATION_PAGE_DEFAULT_SIZE,
       sort: filters.sort ?? this.activatedRoute.snapshot.queryParams['sort'],
       status: filters.status?.toString() !== 'all' ? filters.status ?? this.activatedRoute.snapshot.queryParams['status'] : undefined,
       creator: filters.creator ? filters.creator ?? this.activatedRoute.snapshot.queryParams['creator'] : undefined,

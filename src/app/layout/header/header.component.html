@@ -1,5 +1,5 @@
 <mat-toolbar color="primary" class="header">
-  <strong class="header__logo">📄 DocPanel</strong>
+  <strong class="header__logo" [routerLink]="[routerLinks.dashboard]">📄 DocPanel</strong>
 
   @if (user$ | async; as user) {
     <div class="header__user-block">

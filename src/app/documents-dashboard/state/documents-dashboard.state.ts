@@ -31,6 +31,7 @@ import {
   UpdateDocumentSuccess
 } from './documents-dashboard.actions';
 import {progressStatuses} from '../../core/enums';
+import {PAGINATION_PAGE_DEFAULT_SIZE} from '../../core/core.symbols';
 
 @State<DocumentStateModel>({
   name: 'documents',
@@ -77,6 +78,7 @@ export class DocumentsDashboardState {
     ctx.patchState({
       loadDocumentsListStatus: progressStatuses.inProgress,
       lastLoadDocumentsListError: null,
+      currentFilters: filters,
     });
 
     this.documentsDashboardService.loadDocumentsList(filters).subscribe({
@@ -227,12 +229,21 @@ export class DocumentsDashboardState {
   deleteDocumentSuccess(ctx: StateContext<DocumentStateModel>, {documentId}: DeleteDocumentSuccess): void {
     const state = ctx.getState();
     const updatedList = state.documentsList.filter(doc => doc.id !== documentId);
+    const newTotalCount = state.documentsItemsCount - 1;
 
     ctx.patchState({
       performDocumentActionStatus: progressStatuses.succeed,
       documentsList: updatedList,
-      documentsItemsCount: state.documentsItemsCount - 1,
+      documentsItemsCount: newTotalCount,
     });
+
+    if (updatedList.length === 0 && newTotalCount > 0) {
+      ctx.dispatch(new LoadDocumentsList({
+        ...state.currentFilters,
+        page: 1,
+        size: state.currentFilters.size ?? PAGINATION_PAGE_DEFAULT_SIZE
+      }));
+    }
   }
 
   @Action(DeleteDocumentFail)

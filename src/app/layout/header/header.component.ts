@@ -34,4 +34,6 @@ export class HeaderComponent {
   logout() {
     this.store.dispatch(new Logout());
   }
+
+  protected readonly RouterLink = RouterLink;
 }

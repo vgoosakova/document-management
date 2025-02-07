@@ -37,6 +37,7 @@ import {
 } from '../../state/documents-dashboard.actions';
 import {ConfirmDialogComponent} from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import {routerLinks} from '../../../core/enums';
+import {PAGINATION_PAGE_DEFAULT_SIZE} from '../../../core/core.symbols';
 
 @Component({
   selector: 'app-documents-dashboard-table',
@@ -53,7 +54,7 @@ export class DocumentsDashboardTableComponent implements OnInit {
   pageSizeOptions = [5, 10, 25];
 
   pageIndex = signal(0);
-  pageSize = signal(10);
+  pageSize = signal(PAGINATION_PAGE_DEFAULT_SIZE);
   sortField = signal<string | null>(null);
   sortDirection = signal<'asc' | 'desc' | ''>('');
 
@@ -79,7 +80,7 @@ export class DocumentsDashboardTableComponent implements OnInit {
       this.pageIndex.set(isNaN(page) || page < 1 ? 0 : page - 1);
 
       const size = Number(params['size']);
-      this.pageSize.set(isNaN(size) ? 10 : size);
+      this.pageSize.set(isNaN(size) ? PAGINATION_PAGE_DEFAULT_SIZE : size);
     });
   }
 

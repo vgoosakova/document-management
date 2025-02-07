@@ -13,6 +13,9 @@ export interface DocumentStateModel {
   /** Contain a loaded documents list. */
   documentsList: DocumentModel[];
 
+  /** Store current filters. */
+  currentFilters: Partial<DocumentsListFilters>;
+
   /** Contain number of all items loaded. */
   documentsItemsCount: number;
 
@@ -37,6 +40,7 @@ export const defaultDocumentState: DocumentStateModel = {
   loadDocumentsListStatus: progressStatuses.notInitialized,
   lastLoadDocumentsListError: null,
   documentsList: [],
+  currentFilters: {},
   documentsItemsCount: 0,
 
   manageDocumentStatus: progressStatuses.notInitialized,
