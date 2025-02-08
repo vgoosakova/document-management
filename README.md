@@ -1,27 +1,58 @@
-# DocumentManagement
+# Document Management System
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.11.
+## Overview
+Document Management System is a web application built with Angular 18+ that provides document management capabilities, including document storage, filtering, sorting, and review processes. The system supports two user roles: **User** and **Reviewer**.
 
-## Development server
+## Features
+- User authentication using JWT
+- Document listing with pagination, filtering, and sorting
+- Role-based access control
+- Document review workflow
+- Integration with PSPDFKit for document viewing and editing
+- State management using NGXS
+- Angular Material UI components
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Technologies
+- **Frontend**: Angular 18+, TypeScript
+- **State Management**: NGXS
+- **UI Framework**: Angular Material
+- **Document Rendering**: PSPDFKit
+- **Testing**: Jasmine & Karma
 
-## Code scaffolding
+## Getting Started
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+### Prerequisites
+Ensure you have the following installed:
+- [Node.js](https://nodejs.org/) (Recommended: v18+)
+- [Yarn](https://yarnpkg.com/) (Recommended: v1.22+)
+- Angular CLI (Install globally if needed: `npm install -g @angular/cli`)
 
-## Build
+### Installation
+Clone the repository and install dependencies:
+```sh
+git clone <repository-url>
+cd document-management
+yarn install
+```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+### Running the Application
+To start the application with a proxy configuration:
+```sh
+yarn start
+```
+The application will be available at `http://localhost:4200/`.
 
-## Running unit tests
+### Building for Production
+```sh
+yarn build
+```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+### Running Tests
+Run unit tests:
+```sh
+yarn test
+```
+Run lint checks:
+```sh
+yarn lint
+```

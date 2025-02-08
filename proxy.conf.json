@@ -1,0 +1,17 @@
+{
+  "/api": {
+    "target": "https://legaltech-testing.coobrick.app",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/s3": {
+    "target": "https://legaltech-testing.s3.us-east-1.amazonaws.com",
+    "changeOrigin": true,
+    "secure": false,
+    "pathRewrite": {
+      "^/s3": ""
+    }
+  }
+}
+
