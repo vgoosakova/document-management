@@ -7,8 +7,7 @@ import {
   Input,
   OnInit,
   Output,
-  signal,
-  Signal
+  signal
 } from '@angular/core';
 import {PageEvent} from '@angular/material/paginator';
 import {Sort} from '@angular/material/sort';
@@ -46,7 +45,7 @@ import {PAGINATION_PAGE_DEFAULT_SIZE} from '../../../core/core.symbols';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DocumentsDashboardTableComponent implements OnInit {
-  @Input({required: true}) documents!: Signal<DocumentModel[]>;
+  @Input({required: true}) documents!: DocumentModel[];
   @Input() isReviewer!: boolean;
   @Output() filtersChanged = new EventEmitter<DocumentsListFilters>();
 

@@ -10,8 +10,8 @@ import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatProgressBar} from '@angular/material/progress-bar';
-import {MatOption} from '@angular/material/core';
-import {MatSelect} from '@angular/material/select';
+import {MatOptionModule} from '@angular/material/core';
+import {MatSelectModule} from '@angular/material/select';
 
 export const authRoutes: Routes = [
   {
@@ -42,8 +42,8 @@ export const authRoutes: Routes = [
     ReactiveFormsModule,
     RouterLink,
     MatProgressBar,
-    MatOption,
-    MatSelect,
+    MatOptionModule,
+    MatSelectModule,
   ],
 })
 export class AuthModule {

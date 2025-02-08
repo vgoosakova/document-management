@@ -1,6 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { RegistrationComponent } from './registration.component';
+import {RegistrationComponent} from './registration.component';
+import {provideStore} from '@ngxs/store';
+import {MatCardModule} from '@angular/material/card';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatSelectModule} from '@angular/material/select';
+import {MatOptionModule} from '@angular/material/core';
+import {ReactiveFormsModule} from '@angular/forms';
+import {provideRouter, RouterModule} from '@angular/router';
+import {MatInputModule} from '@angular/material/input';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 describe('RegistrationComponent', () => {
   let component: RegistrationComponent;
@@ -8,9 +17,20 @@ describe('RegistrationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RegistrationComponent]
+      declarations: [RegistrationComponent],
+      imports: [
+        MatCardModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatOptionModule,
+        ReactiveFormsModule,
+        RouterModule,
+        MatInputModule,
+        BrowserAnimationsModule
+      ],
+      providers: [provideRouter([]), provideStore([])]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(RegistrationComponent);
     component = fixture.componentInstance;

@@ -1,6 +1,8 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { DocumentsDashboardRootComponent } from './documents-dashboard-root.component';
+import {DocumentsDashboardRootComponent} from './documents-dashboard-root.component';
+import {provideRouter} from '@angular/router';
+import {provideStore} from '@ngxs/store';
 
 describe('DocumentsDashboardRootComponent', () => {
   let component: DocumentsDashboardRootComponent;
@@ -8,9 +10,11 @@ describe('DocumentsDashboardRootComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DocumentsDashboardRootComponent]
+      declarations: [DocumentsDashboardRootComponent],
+      imports: [],
+      providers: [provideRouter([]), provideStore([])],
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(DocumentsDashboardRootComponent);
     component = fixture.componentInstance;

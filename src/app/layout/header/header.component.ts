@@ -1,8 +1,8 @@
 import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {RouterLink, RouterLinkActive} from '@angular/router';
 import {MatToolbarModule} from '@angular/material/toolbar';
-import {MatIcon} from '@angular/material/icon';
-import {MatButton} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
 import {Observable} from 'rxjs';
 import {AuthStateModel} from '../../auth/state/auth.model';
 import {AuthState} from '../../auth/state/auth.state';
@@ -20,8 +20,8 @@ import {routerLinks} from '../../core/enums';
   imports: [
     RouterLink,
     MatToolbarModule,
-    MatIcon,
-    MatButton,
+    MatIconModule,
+    MatButtonModule,
     CommonModule,
     RouterLinkActive
   ]
@@ -34,6 +34,4 @@ export class HeaderComponent {
   logout() {
     this.store.dispatch(new Logout());
   }
-
-  protected readonly RouterLink = RouterLink;
 }

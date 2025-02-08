@@ -21,16 +21,16 @@
       (filtersChanged)="onFiltersChanged($event)"
     ></app-documents-dashboard-filters>
 
-    <ng-container *ngIf="documentsList().length; else noDocuments">
-      <app-documents-dashboard-table
-        [documents]="documentsList"
-        [isReviewer]="user.role === userRole.reviewer"
-        (filtersChanged)="onFiltersChanged($event)"
-      ></app-documents-dashboard-table>
-    </ng-container>
+    @if (documentsList$ | async; as documentsList) {
+      @if (documentsList.length) {
+        <app-documents-dashboard-table
+          [documents]="documentsList"
+          [isReviewer]="user.role === userRole.reviewer"
+          (filtersChanged)="onFiltersChanged($event)"
+        ></app-documents-dashboard-table>
+      } @else {
+        <p class="dashboard-container__no-documents-text">No documents yet</p>
+      }
+    }
   }
-
-  <ng-template #noDocuments>
-    <p class="dashboard-container__no-documents-text">No documents yet</p>
-  </ng-template>
 </div>

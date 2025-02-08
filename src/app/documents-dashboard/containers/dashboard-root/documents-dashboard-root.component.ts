@@ -1,9 +1,9 @@
-import {ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, Signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit} from '@angular/core';
 import {Store} from '@ngxs/store';
 import {CreateDocument, LoadDocumentsList} from '../../state/documents-dashboard.actions';
 import {DocumentsDashboardState} from '../../state/documents-dashboard.state';
-import {DocumentModel, DocumentsListFilters, DocumentStateModel} from '../../state/documents-dashboard.model';
-import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
+import {DocumentsListFilters, DocumentStateModel} from '../../state/documents-dashboard.model';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {filter, Observable} from 'rxjs';
 import {progressStatuses} from '../../../core/enums';
 import {AuthState} from '../../../auth/state/auth.state';
@@ -30,14 +30,10 @@ export class DocumentsDashboardRootComponent implements OnInit {
   private readonly dialog = inject(MatDialog);
 
   readonly user$: Observable<AuthStateModel['user']> = this.store.select(AuthState.user);
+  readonly documentsList$: Observable<DocumentStateModel['documentsList']> = this.store.select(DocumentsDashboardState.documentsList);
   readonly loadDocumentsListStatus$: Observable<DocumentStateModel['loadDocumentsListStatus']> = this.store.select(DocumentsDashboardState.loadDocumentsListStatus);
   readonly manageDocumentStatus$: Observable<DocumentStateModel['manageDocumentStatus']> = this.store.select(DocumentsDashboardState.manageDocumentStatus);
   readonly performDocumentActionStatus$: Observable<DocumentStateModel['performDocumentActionStatus']> = this.store.select(DocumentsDashboardState.performDocumentActionStatus);
-
-  documentsList: Signal<DocumentModel[]> = toSignal(
-    this.store.select(DocumentsDashboardState.documentsList),
-    {initialValue: []}
-  );
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
