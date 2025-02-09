@@ -2,7 +2,7 @@ import {inject, Injectable} from '@angular/core';
 import {Action, Selector, State, StateContext} from '@ngxs/store';
 import {defaultDocumentState, DocumentStateModel, DocumentStatus} from './documents-dashboard.model';
 import {DocumentsDashboardService} from '../services/documents-dashboard.service';
-import {ErrorHandlerService} from '../../shared/error-handler.service';
+import {ErrorHandlerService} from '../../shared/services/error-handler.service';
 import {
   ChangeDocumentStatus,
   ChangeDocumentStatusFail,

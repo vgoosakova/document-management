@@ -41,6 +41,4 @@ export class DocumentsDashboardEditDialogComponent {
   cancel(): void {
     this.dialogRef.close();
   }
-
-  protected readonly document = document;
 }

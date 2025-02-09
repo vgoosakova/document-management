@@ -14,7 +14,7 @@ import {inject, Injectable} from '@angular/core';
 import {AuthService} from '../services/auth.service';
 import {Navigate} from '@ngxs/router-plugin';
 import {routerLinks} from '../../core/enums';
-import {ErrorHandlerService} from '../../shared/error-handler.service';
+import {ErrorHandlerService} from '../../shared/services/error-handler.service';
 
 @State<AuthStateModel>({
   name: 'auth',

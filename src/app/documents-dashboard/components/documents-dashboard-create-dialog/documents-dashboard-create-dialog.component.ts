@@ -1,15 +1,8 @@
-import {ChangeDetectionStrategy, Component, ElementRef, inject, Inject, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, inject, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {MatDialogRef} from '@angular/material/dialog';
 import {DocumentStatus} from '../../state/documents-dashboard.model';
-import {ErrorHandlerService} from '../../../shared/error-handler.service';
-
-interface DocumentData {
-  id: string;
-  name: string;
-  status: string;
-  isReviewer: boolean;
-}
+import {ErrorHandlerService} from '../../../shared/services/error-handler.service';
 
 @Component({
   selector: 'app-documents-dashboard-create-dialog',
@@ -27,7 +20,6 @@ export class DocumentsDashboardCreateDialogComponent {
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<DocumentsDashboardCreateDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DocumentData
   ) {
     this.formGroup = this.fb.group({
       name: this.fb.control('', {
@@ -54,6 +46,8 @@ export class DocumentsDashboardCreateDialogComponent {
         this.formGroup.patchValue({file: this.file});
       } else {
         this.errorHandler.showErrorMessage('Only PDF files are allowed.');
+        this.formGroup.patchValue({file: null});
+        this.file = null;
       }
     }
   }
@@ -67,6 +61,8 @@ export class DocumentsDashboardCreateDialogComponent {
         this.formGroup.patchValue({file: this.file});
       } else {
         this.errorHandler.showErrorMessage('Only PDF files are allowed.');
+        this.formGroup.patchValue({file: null});
+        this.file = null;
       }
     }
   }

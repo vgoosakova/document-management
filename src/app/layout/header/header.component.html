@@ -5,9 +5,9 @@
     <div class="header__user-block">
       <div class="header__user-info">
         <mat-icon>perm_identity</mat-icon>
-        <span>{{ user.fullName }}</span>
+        <span class="header__username">{{ user.fullName }}</span>
       </div>
-      <button mat-button color="warn" (click)="logout()">Log out</button>
+      <button class="logout-button" mat-button color="warn" (click)="logout()">Log out</button>
     </div>
   } @else {
     <div class="header__buttons">

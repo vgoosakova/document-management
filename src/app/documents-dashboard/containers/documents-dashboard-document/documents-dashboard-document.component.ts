@@ -17,7 +17,7 @@ import {DocumentStateModel} from '../../state/documents-dashboard.model';
 import {filter, Observable} from 'rxjs';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {progressStatuses, routerLinks} from '../../../core/enums';
-import {ErrorHandlerService} from '../../../shared/error-handler.service';
+import {ErrorHandlerService} from '../../../shared/services/error-handler.service';
 
 
 @Component({
@@ -36,7 +36,7 @@ export class DocumentsDashboardDocumentComponent implements OnInit, OnDestroy {
   readonly currentDocument$: Observable<DocumentStateModel['currentDocument']> = this.store.select(DocumentsDashboardState.currentDocument);
   private readonly destroyRef = inject(DestroyRef);
   private readonly route = inject(ActivatedRoute);
-  private instance: Instance | null = null;
+  instance: Instance | null = null;
 
   ngOnInit() {
     const documentId = this.route.snapshot.paramMap.get('id');
@@ -56,11 +56,11 @@ export class DocumentsDashboardDocumentComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.instance) {
-      PSPDFKit.unload(this.instance);
-      this.instance = null;
+    if (this.viewerContainer?.nativeElement) {
+      PSPDFKit.unload(this.viewerContainer.nativeElement);
     }
-    this.store.dispatch(new ResetDocumentDetails())
+    this.instance = null;
+    this.store.dispatch(new ResetDocumentDetails());
   }
 
   private async loadPSPDFKit(fileUrl: string) {
