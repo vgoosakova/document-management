@@ -5,6 +5,7 @@ import {Login} from '../../state/auth.actions';
 import {routerLinks} from '../../../core/enums';
 import {Observable} from 'rxjs';
 import {AuthState} from '../../state/auth.state';
+import {toSignal} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-login',
@@ -13,16 +14,6 @@ import {AuthState} from '../../state/auth.state';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginComponent {
-  readonly emailError = computed(() => {
-    if (this.email.hasError('required')) return 'Email is required';
-    if (this.email.hasError('email')) return 'Invalid email format';
-    return '';
-  });
-  readonly passwordError = computed(() => {
-    if (this.password.hasError('required')) return 'Password is required';
-    if (this.password.hasError('minlength')) return 'Password must be at least 6 characters';
-    return '';
-  });
   protected readonly routerLinks = routerLinks;
   private readonly store = inject(Store);
   readonly isLoading$: Observable<boolean> = this.store.select(AuthState.isLoading);
@@ -33,6 +24,22 @@ export class LoginComponent {
       password: ['', [Validators.required, Validators.minLength(6)]],
     },
   );
+
+  private readonly emailValue = toSignal(this.email.valueChanges, {initialValue: this.email.value});
+  readonly emailError = computed(() => {
+    this.emailValue();
+    if (this.email.hasError('required')) return 'Email is required';
+    if (this.email.hasError('email')) return 'Invalid email format';
+    return '';
+  });
+
+  private readonly passwordValue = toSignal(this.password.valueChanges, {initialValue: this.password.value});
+  readonly passwordError = computed(() => {
+    this.passwordValue();
+    if (this.password.hasError('required')) return 'Password is required';
+    if (this.password.hasError('minlength')) return 'Password must be at least 6 characters';
+    return '';
+  });
 
   public get email() {
     return this.formGroup.controls.email;

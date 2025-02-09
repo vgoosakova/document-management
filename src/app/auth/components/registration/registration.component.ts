@@ -1,17 +1,11 @@
 import {ChangeDetectionStrategy, Component, computed, inject} from '@angular/core';
-import {FormBuilder, ValidatorFn, Validators} from '@angular/forms';
+import {AbstractControl, FormBuilder, ValidationErrors, Validators} from '@angular/forms';
 import {Store} from '@ngxs/store';
 import {Registration} from '../../state/auth.actions';
 import {routerLinks} from '../../../core/enums';
 import {RegisterData, UserRole} from '../../state/auth.model';
 import {AuthState} from '../../state/auth.state';
-
-/** Custom validator to check if passwords match */
-const passwordsMatchValidator: ValidatorFn = (group) => {
-  const password = group.get('password')?.value;
-  const confirmPassword = group.get('confirmPassword')?.value;
-  return password === confirmPassword ? null : {passwordMismatch: true};
-};
+import {toSignal} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-registration',
@@ -20,34 +14,8 @@ const passwordsMatchValidator: ValidatorFn = (group) => {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistrationComponent {
-  readonly roleError = computed(() => {
-    if (this.role.hasError('required')) return 'Role is required';
-    return '';
-  });
-  readonly emailError = computed(() => {
-    if (this.email.hasError('required')) return 'Email is required';
-    if (this.email.hasError('email')) return 'Invalid email format';
-    return '';
-  });
-  readonly passwordError = computed(() => {
-    if (this.password.hasError('required')) return 'Password is required';
-    if (this.password.hasError('minlength')) return 'Password must be at least 6 characters';
-    return '';
-  });
-  readonly confirmPasswordError = computed(() => {
-    if (this.confirmPassword.hasError('required')) return 'Please confirm your password';
-    if (this.confirmPassword.hasError('passwordMismatch')) return 'Passwords do not match';
-    return '';
-  });
-  readonly fullNameError = computed(() => {
-    if (this.fullName.hasError('required')) return 'Full name is required';
-    if (this.fullName.hasError('minlength')) return 'Full name must be at least 3 characters';
-    return '';
-  });
   protected readonly routerLinks = routerLinks;
   protected readonly userRole = UserRole;
-  private readonly store = inject(Store);
-  readonly isLoading$ = this.store.select(AuthState.isLoading);
   private readonly fb = inject(FormBuilder);
   readonly formGroup = this.fb.nonNullable.group(
     {
@@ -55,10 +23,49 @@ export class RegistrationComponent {
       role: [null as UserRole | null, [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', [Validators.required]]
+      confirmPassword: ['', [Validators.required, this.passwordsMatchValidator]]
     },
-    {validators: passwordsMatchValidator}
   );
+  private readonly store = inject(Store);
+  readonly isLoading$ = this.store.select(AuthState.isLoading);
+  private readonly emailValue = toSignal(this.email.valueChanges, {initialValue: this.email.value});
+  readonly emailError = computed(() => {
+    this.emailValue();
+    if (this.email.hasError('required')) return 'Email is required';
+    if (this.email.hasError('email')) return 'Invalid email format';
+    return '';
+  });
+
+  private readonly roleValue = toSignal(this.role.valueChanges, {initialValue: this.role.value});
+  readonly roleError = computed(() => {
+    this.roleValue();
+    if (this.role.hasError('required')) return 'Role is required';
+    return '';
+  });
+
+  private readonly fullNameValue = toSignal(this.fullName.valueChanges, {initialValue: this.fullName.value});
+  readonly fullNameError = computed(() => {
+    this.fullNameValue();
+    if (this.fullName.hasError('required')) return 'Full name is required';
+    if (this.fullName.hasError('minlength')) return 'Full name must be at least 3 characters';
+    return '';
+  });
+
+  private readonly passwordValue = toSignal(this.password.valueChanges, {initialValue: this.password.value});
+  readonly passwordError = computed(() => {
+    this.passwordValue();
+    if (this.password.hasError('required')) return 'Password is required';
+    if (this.password.hasError('minlength')) return 'Password must be at least 6 characters';
+    return '';
+  });
+
+  private readonly confirmPasswordValue = toSignal(this.confirmPassword.valueChanges, {initialValue: this.confirmPassword.value});
+  readonly confirmPasswordError = computed(() => {
+    this.confirmPasswordValue();
+    if (this.confirmPassword.hasError('required')) return 'Please confirm your password';
+    if (this.confirmPassword.hasError('passwordMismatch')) return 'Passwords do not match';
+    return '';
+  });
 
   public get fullName() {
     return this.formGroup.controls.fullName;
@@ -86,5 +93,12 @@ export class RegistrationComponent {
       const formData: RegisterData = {fullName: fullName!, email: email!, password: password!, role: role!};
       this.store.dispatch(new Registration(formData));
     }
+  }
+
+
+  private passwordsMatchValidator(control: AbstractControl): ValidationErrors | null {
+    const password = control.parent?.get('password');
+    const confirmPassword = control.parent?.get('confirmPassword');
+    return password?.value == confirmPassword?.value ? null : {'passwordMismatch': true};
   }
 }

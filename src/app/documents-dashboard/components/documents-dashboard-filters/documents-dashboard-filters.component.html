@@ -29,7 +29,7 @@
   @if ((user$ | async)?.role === userRole.reviewer) {
     <mat-form-field>
       <mat-label>Creator</mat-label>
-      <input matInput placeholder="Filter by creator" [(ngModel)]="filters.creator" (keyup.enter)="onFiltersChanged()">
+      <input matInput placeholder="Filter by creator" [(ngModel)]="filters.creator" (focusout)="onFiltersChanged()" (keyup.enter)="onFiltersChanged()">
       @if (filters.creator) {
         <button mat-icon-button matSuffix (click)="clearCreator()">
           <mat-icon>clear</mat-icon>

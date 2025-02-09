@@ -32,7 +32,7 @@ export class DocumentsDashboardCreateDialogComponent {
     this.formGroup = this.fb.group({
       name: this.fb.control('', {
         nonNullable: true,
-        validators: [Validators.required, Validators.minLength(3), Validators.maxLength(100)]
+        validators: [Validators.required]
       }),
       file: this.fb.control('', {
         nonNullable: true,
